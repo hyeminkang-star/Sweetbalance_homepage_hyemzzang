@@ -871,8 +871,9 @@ function tgEnd(){
 
 function tgHandleTyping(){
   if(!tg || tg.timeLeft <= 0) return;
-  // 입력값도 NFC로 정규화해서 currentWord와 같은 방식으로 비교
-  const typed = tgEl.input.value.normalize('NFC');
+  // 입력값도 NFC로 정규화 + 앞뒤 공백 제거 후 비교.
+  // (모바일 자판의 자동완성·자동 띄어쓰기로 끝에 공백이 붙는 경우 방지)
+  const typed = tgEl.input.value.normalize('NFC').trim();
   // 'input'과 'compositionend'가 같은 값을 두 번 보고하는 경우를 걸러
   // 타수/정확도가 중복 집계되지 않게 한다.
   if(typed === tg.lastTyped) return;
@@ -894,9 +895,18 @@ function tgHandleTyping(){
 }
 
 tgEl.input.addEventListener('input', tgHandleTyping);
-// 한글 IME는 조합 중간에도 'input'이 발생하지만, 일부 브라우저는 조합이 끝난
-// 직후(compositionend)에야 완성된 값을 반영하므로 한 번 더 확인해준다.
+// 한글 IME는 조합 중간에도 'input'이 발생하지만, 일부 브라우저·자판 조합은 조합이
+// 끝난 직후(compositionend)나 keyup 시점에야 완성된 값을 반영하므로 함께 확인한다.
 tgEl.input.addEventListener('compositionend', tgHandleTyping);
+tgEl.input.addEventListener('keyup', tgHandleTyping);
+// 자동 감지가 놓치는 경우를 위한 확실한 안전장치: Enter를 누르면 무조건 재검사한다.
+tgEl.input.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter' && tg){
+    e.preventDefault();
+    tg.lastTyped = null; // 강제로 재검사되도록 초기화
+    tgHandleTyping();
+  }
+});
 
 tgEl.startBtn.addEventListener('click', tgStart);
 tgEl.retryBtn.addEventListener('click', tgStart);
