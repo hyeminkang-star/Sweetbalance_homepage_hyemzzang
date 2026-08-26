@@ -250,6 +250,45 @@
     #feature .bg-text{font-size:120px;}
   }
 
+  /* ===== Section: 샐러드 이름 타자 게임 ===== */
+  #typing{background:var(--sw);}
+  .typing-panel{
+    margin-top:32px;background:#fff;border:1px solid var(--border);border-radius:var(--r-2xl);
+    padding:40px;box-shadow:var(--sh-md);
+  }
+  .typing-stats{display:flex;gap:36px;flex-wrap:wrap;margin-bottom:28px;}
+  .typing-stats .ts-item{display:flex;flex-direction:column;}
+  .typing-stats .ts-item b{font-family:var(--en);font-weight:800;font-size:30px;color:var(--g);letter-spacing:-.01em;}
+  .typing-stats .ts-item span{font-size:11px;color:var(--slate);}
+  .typing-target{
+    font-family:var(--display-kr);font-weight:700;font-size:26px;color:var(--slate);text-align:center;
+    padding:36px 20px;background:var(--paper);border-radius:var(--r-lg);margin-bottom:18px;
+    letter-spacing:.01em;line-height:1.4;min-height:96px;display:flex;align-items:center;justify-content:center;
+  }
+  .typing-target .ch{transition:color 80ms var(--ease-soft);}
+  .typing-target .ch.ok{color:var(--g);}
+  .typing-target .ch.bad{color:#D64545;background:rgba(214,69,69,.12);border-radius:3px;}
+  .typing-input{
+    width:100%;font-size:19px;padding:16px 20px;border-radius:var(--r-md);border:2px solid var(--border);
+    text-align:center;font-family:var(--kr);outline:none;color:var(--ink);background:#fff;
+    transition:border-color 160ms var(--ease-soft);
+  }
+  .typing-input:focus{border-color:var(--g);}
+  .typing-input:disabled{background:var(--paper);color:var(--mist);}
+  .typing-actions{display:flex;justify-content:center;margin-top:24px;}
+  .typing-result{
+    margin-top:8px;text-align:center;display:none;
+  }
+  .typing-result.show{display:block;animation:pop 420ms var(--ease-spring) forwards;}
+  .typing-result .tr-headline{font-family:var(--display-kr);font-weight:700;font-size:22px;color:var(--ink);margin-bottom:8px;}
+  .typing-result .tr-sub{font-size:14px;color:var(--char);margin-bottom:20px;}
+  @media (max-width:640px){
+    .typing-panel{padding:24px;}
+    .typing-stats{gap:22px;}
+    .typing-stats .ts-item b{font-size:24px;}
+    .typing-target{font-size:20px;padding:28px 16px;}
+  }
+
   /* ===== Brand footer ===== */
   #brand{background:var(--g);color:var(--sw);padding:96px 0 0;}
   #brand .wrap{text-align:center;display:flex;flex-direction:column;align-items:center;}
@@ -317,6 +356,7 @@
         <a href="#newp">신제품</a>
         <a href="#product">오늘의 샐러드</a>
         <a href="#feature">점심 메뉴 뽑기</a>
+        <a href="#typing">타자 게임</a>
         <a href="#brand">브랜드 소개</a>
       </span>
       <button class="icon-btn" id="inquiryBtn" aria-label="상품 문의" title="상품 문의">✉️</button>
@@ -466,6 +506,37 @@
             <button class="btn btn-primary" id="confirmBtn">좋아요, 이걸로 할래요!</button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MINI GAME: 샐러드 이름 타자 게임 ============ -->
+<section id="typing">
+  <div class="wrap">
+    <div class="eyebrow">Mini Game</div>
+    <h2 class="sec-title">샐러드 이름 타자 게임</h2>
+    <p class="sec-sub">어려운 샐러드 이름, 얼마나 빨리 칠 수 있나요? 60초 동안 도전해보세요.</p>
+
+    <div class="typing-panel">
+      <div class="typing-stats">
+        <div class="ts-item"><b id="tgSpeed">0</b><span>타/분</span></div>
+        <div class="ts-item"><b id="tgScore">0</b><span>맞춘 개수</span></div>
+        <div class="ts-item"><b id="tgAccuracy">100%</b><span>정확도</span></div>
+        <div class="ts-item"><b id="tgTime">60</b><span>남은 시간(초)</span></div>
+      </div>
+
+      <div class="typing-target" id="typingTarget">🎮 게임 시작 버튼을 눌러주세요</div>
+      <input type="text" id="typingInput" class="typing-input" placeholder="여기에 그대로 입력하세요" disabled autocomplete="off" autocapitalize="off" spellcheck="false">
+
+      <div class="typing-actions">
+        <button class="btn btn-accent btn-lg" id="typingStartBtn">🎮 게임 시작</button>
+      </div>
+
+      <div class="typing-result" id="typingResult">
+        <div class="tr-headline" id="trHeadline"></div>
+        <div class="tr-sub" id="trSub"></div>
+        <button class="btn btn-secondary" id="typingRetryBtn">다시 도전하기</button>
       </div>
     </div>
   </div>
@@ -693,6 +764,128 @@ document.getElementById('copyEmailBtn').addEventListener('click', async ()=>{
     showToast('직접 선택해서 복사해주세요: '+email);
   }
 });
+
+/* =========================================================
+   미니게임 — 샐러드 이름 타자 게임
+========================================================= */
+const TYPING_WORDS = Array.from(new Set([
+  ...SALADS.map(s=>s.kr),
+  ...MENU.map(m=>m.kr),
+  '풀드포크 체다치즈 통밀 프로틴 랩',
+  '훈제오리 에그마요 통밀 프로틴 랩',
+]));
+
+const tgEl = {
+  speed: document.getElementById('tgSpeed'),
+  score: document.getElementById('tgScore'),
+  accuracy: document.getElementById('tgAccuracy'),
+  time: document.getElementById('tgTime'),
+  target: document.getElementById('typingTarget'),
+  input: document.getElementById('typingInput'),
+  startBtn: document.getElementById('typingStartBtn'),
+  retryBtn: document.getElementById('typingRetryBtn'),
+  result: document.getElementById('typingResult'),
+  trHeadline: document.getElementById('trHeadline'),
+  trSub: document.getElementById('trSub'),
+};
+
+const GAME_SECONDS = 60;
+let tg = null; // active game state
+
+function tgPickWord(prevWord){
+  let pool = TYPING_WORDS;
+  if(prevWord && pool.length > 1) pool = pool.filter(w=>w!==prevWord);
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+function tgRenderTarget(typed){
+  const word = tg.currentWord;
+  let html = '';
+  for(let i=0;i<word.length;i++){
+    let cls = '';
+    if(i < typed.length) cls = typed[i]===word[i] ? 'ok' : 'bad';
+    html += '<span class="ch '+cls+'">'+word[i]+'</span>';
+  }
+  tgEl.target.innerHTML = html;
+}
+
+function tgUpdateStats(){
+  const elapsedMin = Math.max((GAME_SECONDS - tg.timeLeft) / 60, 1/60);
+  const speed = Math.round(tg.correctChars / elapsedMin);
+  const acc = tg.keystrokes === 0 ? 100 : Math.round((tg.goodKeystrokes / tg.keystrokes) * 100);
+  tgEl.speed.textContent = speed;
+  tgEl.score.textContent = tg.score;
+  tgEl.accuracy.textContent = acc + '%';
+  tgEl.time.textContent = tg.timeLeft;
+  return { speed, acc };
+}
+
+function tgNextWord(){
+  tg.currentWord = tgPickWord(tg.currentWord);
+  tgEl.input.value = '';
+  tgRenderTarget('');
+}
+
+function tgStart(){
+  tg = {
+    timeLeft: GAME_SECONDS, score: 0, correctChars: 0,
+    keystrokes: 0, goodKeystrokes: 0, currentWord: '', interval: null,
+  };
+  tgEl.result.classList.remove('show');
+  tgEl.startBtn.style.display = 'none';
+  tgEl.input.disabled = false;
+  tgEl.input.value = '';
+  tgNextWord();
+  tgUpdateStats();
+  tgEl.input.focus();
+
+  tg.interval = setInterval(()=>{
+    tg.timeLeft--;
+    tgUpdateStats();
+    if(tg.timeLeft <= 0) tgEnd();
+  }, 1000);
+}
+
+function tgEnd(){
+  clearInterval(tg.interval);
+  tgEl.input.disabled = true;
+  tgEl.startBtn.style.display = 'inline-flex';
+  tgEl.startBtn.textContent = '🎮 다시 시작하기';
+  const { speed, acc } = tgUpdateStats();
+  tgEl.target.textContent = '⏱️ 시간 종료!';
+
+  let headline, sub;
+  if(speed >= 300){ headline = '🔥 타자왕이시네요!'; }
+  else if(speed >= 200){ headline = '🥗 샐러드 마스터 수준이에요!'; }
+  else if(speed >= 100){ headline = '💪 좋아요, 감이 오시죠?'; }
+  else{ headline = '🌱 재미있게 즐겨주셔서 감사해요!'; }
+  sub = speed + '타/분 · ' + tg.score + '개 완성 · 정확도 ' + acc + '%';
+
+  tgEl.trHeadline.textContent = headline;
+  tgEl.trSub.textContent = sub;
+  tgEl.result.classList.add('show');
+}
+
+tgEl.input.addEventListener('input', ()=>{
+  if(!tg || tg.timeLeft <= 0) return;
+  const typed = tgEl.input.value;
+  const word = tg.currentWord;
+
+  tg.keystrokes++;
+  if(word.startsWith(typed)) tg.goodKeystrokes++;
+
+  tgRenderTarget(typed);
+
+  if(typed === word){
+    tg.score++;
+    tg.correctChars += word.length;
+    tgNextWord();
+  }
+  tgUpdateStats();
+});
+
+tgEl.startBtn.addEventListener('click', tgStart);
+tgEl.retryBtn.addEventListener('click', tgStart);
 </script>
 </body>
 </html>
