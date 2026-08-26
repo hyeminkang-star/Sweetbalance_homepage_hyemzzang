@@ -52,6 +52,21 @@
     font-size:12px;font-weight:700;letter-spacing:.02em;background:rgba(0,97,78,.08);color:var(--g);
   }
   .pill-badge.accent{background:var(--seed);color:#fff;}
+  .pill-badge.new{background:#D64545;color:#fff;}
+
+  /* ===== Veggie bounce strip ===== */
+  .veggie-row{display:flex;justify-content:center;align-items:flex-end;gap:clamp(14px,4vw,34px);padding:18px 24px;flex-wrap:wrap;}
+  .veggie-row span{font-size:26px;display:inline-block;animation:veggie-bounce 2.2s var(--ease-spring) infinite;}
+  @keyframes veggie-bounce{
+    0%,100%{transform:translateY(0) scale(1);}
+    28%{transform:translateY(-15px) scale(1.06);}
+    46%{transform:translateY(0) scale(.95);}
+    64%{transform:translateY(-6px) scale(1.02);}
+    80%{transform:translateY(0) scale(1);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .veggie-row span, .float-chip{animation:none;}
+  }
 
   /* ===== Buttons ===== */
   .btn{
@@ -77,12 +92,18 @@
     border-bottom:1px solid var(--div);
   }
   header .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;}
-  .logo{display:flex;align-items:center;gap:8px;font-family:var(--en);font-weight:800;font-size:18px;color:var(--g);letter-spacing:-.01em;text-decoration:none;}
-  .logo .mark{width:26px;height:26px;flex-shrink:0;}
-  header nav{display:flex;align-items:center;gap:28px;}
+  .logo{display:flex;align-items:center;gap:8px;font-family:var(--display-en);font-weight:400;font-size:21px;color:var(--g);letter-spacing:.01em;text-decoration:none;}
+  .logo .mark{width:32px;height:16px;flex-shrink:0;}
+  header nav{display:flex;align-items:center;gap:20px;}
+  header nav .nav-links{display:flex;gap:24px;}
   header nav a{font-size:14px;font-weight:600;color:var(--char);text-decoration:none;transition:color 150ms var(--ease-soft);}
   header nav a:hover{color:var(--g);}
-  header nav a.cta{color:var(--g);}
+  .icon-btn{
+    width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);background:#fff;
+    color:var(--g);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:all 160ms var(--ease-soft);flex-shrink:0;
+  }
+  .icon-btn:hover{border-color:var(--g);background:rgba(0,97,78,.06);}
   @media (max-width:640px){ header nav .nav-links{display:none;} }
 
   /* ===== Hero ===== */
@@ -130,6 +151,33 @@
     .mascot .smile{left:52px;top:74px;width:44px;height:22px;border-width:4px;}
     .mascot .leaf{left:66px;top:-12px;width:16px;height:26px;}
   }
+
+  /* ===== Section: 신제품 (New Arrival) ===== */
+  #newp{background:var(--sw);}
+  .new-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:32px;}
+  .new-card{
+    background:#fff;border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;
+    box-shadow:var(--sh-sm);transition:transform 180ms var(--ease-soft),box-shadow 180ms var(--ease-soft);
+    position:relative;
+  }
+  .new-card:hover{transform:translateY(-4px);box-shadow:var(--sh-md);}
+  .new-card.soldout{opacity:.55;filter:grayscale(.5);}
+  .new-card .nc-visual{
+    height:120px;background:linear-gradient(150deg,#EFE7D2,#DCC79A);display:flex;align-items:center;
+    justify-content:center;font-size:52px;position:relative;
+  }
+  .new-card .nc-badge{position:absolute;top:10px;left:10px;background:#D64545;color:#fff;font-size:10px;font-weight:700;padding:4px 9px;border-radius:var(--r-pill);letter-spacing:.04em;}
+  .new-card .nc-stock{position:absolute;top:10px;right:10px;background:rgba(27,42,36,.75);color:#fff;font-size:10px;font-weight:700;padding:4px 9px;border-radius:var(--r-pill);}
+  .new-card .nc-body{padding:16px;}
+  .new-card .nc-name{font-size:13px;font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:10px;min-height:36px;}
+  .new-card .nc-price{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;}
+  .new-card .nc-price b{font-family:var(--en);font-weight:800;font-size:16px;color:var(--g);}
+  .new-card .nc-price s{font-size:11px;color:var(--mist);}
+  .new-note{
+    display:flex;align-items:center;gap:8px;margin-top:24px;font-size:13px;color:var(--char);
+  }
+  @media (max-width:860px){ .new-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:480px){ .new-grid{grid-template-columns:1fr 1fr;gap:10px;} .new-card .nc-name{font-size:12px;min-height:32px;} }
 
   /* ===== Section: 오늘의 샐러드 (product) ===== */
   #product{background:var(--paper);}
@@ -229,7 +277,11 @@
   /* ===== Brand footer ===== */
   #brand{background:var(--g);color:var(--sw);padding:96px 0 0;}
   #brand .wrap{text-align:center;display:flex;flex-direction:column;align-items:center;}
-  #brand .mascot{width:96px;height:96px;margin-bottom:28px;}
+  .brand-logo{display:flex;flex-direction:column;align-items:center;margin-bottom:36px;}
+  .brand-logo .word{font-family:var(--display-en);font-weight:400;font-size:52px;line-height:1;color:var(--sw);letter-spacing:.01em;}
+  .brand-logo .word.w2{margin-top:2px;}
+  .brand-logo .logo-smile{width:92px;height:46px;border:7px solid var(--sw);border-top:none;border-left-color:transparent;border-right-color:transparent;border-radius:0 0 92px 92px;margin-top:10px;}
+  @media (max-width:640px){ .brand-logo .word{font-size:38px;} .brand-logo .logo-smile{width:70px;height:35px;border-width:5px;} }
   #brand .mission{font-family:var(--display-kr);font-size:28px;line-height:1.5;max-width:640px;margin-bottom:14px;}
   #brand .mission-en{font-size:14px;font-style:italic;color:rgba(253,255,230,.6);margin-bottom:40px;}
   #brand .slogan{font-family:var(--en);font-weight:800;font-size:30px;letter-spacing:-.02em;margin-bottom:44px;}
@@ -246,6 +298,34 @@
     font-size:12px;color:rgba(253,255,230,.55);font-family:var(--en);flex-wrap:wrap;gap:8px;
   }
   @media (max-width:640px){ #brand footer{justify-content:center;text-align:center;} }
+
+  /* ===== 상품 문의 modal ===== */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(27,42,36,.55);display:flex;align-items:center;justify-content:center;
+    padding:24px;z-index:300;opacity:0;pointer-events:none;transition:opacity 220ms var(--ease-soft);
+  }
+  .modal-overlay.show{opacity:1;pointer-events:auto;}
+  .modal-card{
+    background:#fff;border-radius:var(--r-xl);padding:36px;max-width:380px;width:100%;text-align:center;
+    box-shadow:0 24px 56px rgba(0,0,0,.25);position:relative;transform:scale(.94) translateY(8px);
+    transition:transform 220ms var(--ease-spring);
+  }
+  .modal-overlay.show .modal-card{transform:scale(1) translateY(0);}
+  .modal-close{
+    position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:none;
+    background:rgba(0,97,78,.08);color:var(--g);font-size:14px;cursor:pointer;display:flex;
+    align-items:center;justify-content:center;
+  }
+  .modal-icon{width:56px;height:56px;border-radius:50%;background:rgba(0,97,78,.08);display:flex;
+    align-items:center;justify-content:center;font-size:26px;margin:0 auto 18px;}
+  .modal-card h3{font-family:var(--display-kr);font-size:22px;font-weight:700;color:var(--ink);margin-bottom:10px;}
+  .modal-card p{font-size:13px;color:var(--char);line-height:1.7;margin-bottom:22px;}
+  .email-box{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--paper);
+    border:1px solid var(--border);border-radius:var(--r-md);padding:12px 16px;
+  }
+  .email-box span{font-family:var(--en);font-size:14px;font-weight:700;color:var(--g);word-break:break-all;text-align:left;}
+  .email-box button{flex-shrink:0;padding:9px 16px;font-size:12px;}
 </style>
 </head>
 <body>
@@ -253,19 +333,31 @@
 <header>
   <div class="wrap">
     <a href="#hero" class="logo">
-      <svg class="mark" viewBox="0 0 26 26"><circle cx="13" cy="13" r="13" fill="#00614E"/><circle cx="9" cy="12" r="1.6" fill="#FDFFE6"/><circle cx="17" cy="12" r="1.6" fill="#FDFFE6"/><path d="M8 16c2 2 8 2 10 0" stroke="#FDFFE6" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
-      스윗밸런스
+      <svg class="mark" viewBox="0 0 40 20"><path d="M4 4 Q20 20 36 4" stroke="#00614E" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
+      Sweet Balance
     </a>
     <nav>
-      <span class="nav-links" style="display:flex;gap:28px;">
+      <span class="nav-links">
+        <a href="#newp">신제품</a>
         <a href="#product">오늘의 샐러드</a>
         <a href="#feature">점심 메뉴 뽑기</a>
         <a href="#brand">브랜드 소개</a>
       </span>
+      <button class="icon-btn" id="inquiryBtn" aria-label="상품 문의" title="상품 문의">✉️</button>
       <a href="#feature" class="btn btn-primary" style="padding:10px 20px;font-size:13px;">점심 메뉴 뽑기</a>
     </nav>
   </div>
 </header>
+
+<div class="veggie-row" aria-hidden="true">
+  <span style="animation-delay:0s;">🥕</span>
+  <span style="animation-delay:.15s;">🥦</span>
+  <span style="animation-delay:.3s;">🍅</span>
+  <span style="animation-delay:.45s;">🥬</span>
+  <span style="animation-delay:.6s;">🌽</span>
+  <span style="animation-delay:.75s;">🫑</span>
+  <span style="animation-delay:.9s;">🥒</span>
+</div>
 
 <!-- ============ HERO ============ -->
 <section id="hero">
@@ -302,6 +394,48 @@
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ============ NEW ARRIVAL: 통밀 프로틴 랩 ============ -->
+<section id="newp">
+  <div class="wrap">
+    <span class="pill-badge new">🔥 따끈따끈한 신제품</span>
+    <h2 class="sec-title" style="margin-top:14px;">통밀 프로틴 랩</h2>
+    <p class="sec-sub">씹는 든든함까지 챙긴 신메뉴. 통밀 랩에 단백질 재료를 꽉 채웠어요.</p>
+
+    <div class="new-grid">
+      <div class="new-card">
+        <div class="nc-visual">🌯<span class="nc-badge">NEW</span></div>
+        <div class="nc-body">
+          <div class="nc-name">닭가슴살 과카몰리 통밀 프로틴 랩</div>
+          <div class="nc-price"><b>5,910원</b><s>6,600원</s></div>
+        </div>
+      </div>
+      <div class="new-card">
+        <div class="nc-visual">🌯<span class="nc-badge">NEW</span><span class="nc-stock">품절임박</span></div>
+        <div class="nc-body">
+          <div class="nc-name">풀드포크 체다치즈 통밀 프로틴 랩</div>
+          <div class="nc-price"><b>6,210원</b><s>6,900원</s></div>
+        </div>
+      </div>
+      <div class="new-card soldout">
+        <div class="nc-visual">🌯<span class="nc-stock">품절</span></div>
+        <div class="nc-body">
+          <div class="nc-name">훈제오리 에그마요 통밀 프로틴 랩</div>
+          <div class="nc-price"><b>6,210원</b><s>6,900원</s></div>
+        </div>
+      </div>
+      <div class="new-card">
+        <div class="nc-visual">🌯<span class="nc-badge">NEW</span><span class="nc-stock">품절임박</span></div>
+        <div class="nc-body">
+          <div class="nc-name">불고기 치즈 통밀 프로틴 랩</div>
+          <div class="nc-price"><b>5,910원</b><s>6,600원</s></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="new-note">🛒 현재 마켓컬리에서 만나보실 수 있어요.</div>
   </div>
 </section>
 
@@ -374,17 +508,23 @@
   </div>
 </section>
 
+<div class="veggie-row" aria-hidden="true">
+  <span style="animation-delay:.1s;">🍆</span>
+  <span style="animation-delay:.25s;">🥕</span>
+  <span style="animation-delay:.4s;">🥦</span>
+  <span style="animation-delay:.55s;">🍓</span>
+  <span style="animation-delay:.7s;">🥬</span>
+  <span style="animation-delay:.85s;">🍅</span>
+</div>
+
 <!-- ============ BRAND ============ -->
 <section id="brand">
   <div class="wrap">
-    <svg class="mascot" viewBox="0 0 120 120">
-      <path d="M60 8c30 0 50 20 50 50s-20 50-50 50S10 88 10 58 30 8 60 8z" fill="#FDFFE6" opacity=".12"/>
-      <circle cx="60" cy="60" r="46" fill="#FDFFE6"/>
-      <circle cx="46" cy="56" r="6" fill="#00614E"/>
-      <circle cx="74" cy="56" r="6" fill="#00614E"/>
-      <path d="M42 70c8 10 28 10 36 0" stroke="#00614E" stroke-width="7" stroke-linecap="round" fill="none"/>
-      <path d="M60 14c-16 0-28 12-28 12 4-16 20-24 28-24s24 8 28 24c0 0-12-12-28-12z" fill="#84BA45"/>
-    </svg>
+    <div class="brand-logo">
+      <span class="word w1">Sweet</span>
+      <span class="word w2">Balance</span>
+      <div class="logo-smile"></div>
+    </div>
     <div class="mission">진정으로 건강한 식사를 통해,<br>누구나 목표와 행복을 이룰 수 있는 삶을 만듭니다.</div>
     <div class="mission-en">"Through truly healthy meals, we help everyone build a life where they can reach their goals and find happiness."</div>
     <div class="slogan">Eat fresh, be your Best.</div>
@@ -402,6 +542,19 @@
   </div>
 </section>
 
+<div class="modal-overlay" id="inquiryOverlay">
+  <div class="modal-card">
+    <button class="modal-close" id="inquiryClose" aria-label="닫기">✕</button>
+    <div class="modal-icon">✉️</div>
+    <h3>상품 문의</h3>
+    <p>궁금하신 점이 있다면 아래 대표 이메일로<br>편하게 남겨주세요. 빠르게 답변드릴게요.</p>
+    <div class="email-box">
+      <span id="inquiryEmail">online@sweetbalance.kr</span>
+      <button class="btn btn-secondary" id="copyEmailBtn">복사하기</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast">좋은 선택이에요! 🎉 오늘도 균형있게.</div>
 
 <script>
@@ -409,13 +562,13 @@
    오늘의 샐러드 — 요일별 라인업
 ========================================================= */
 const SALADS = [
-  {day:'월', emoji:'🥗', kr:'콥샐러드', en:'Cobb Salad', ing:'닭가슴살 · 달걀 · 아보카도 · 저당 드레싱', kcal:420, protein:23, fiber:8},
-  {day:'화', emoji:'🍛', kr:'병아리콩 샐러드', en:'Chickpea Salad', ing:'병아리콩 · 토마토 · 페타치즈 · 올리브오일', kcal:380, protein:18, fiber:11},
-  {day:'수', emoji:'🐟', kr:'참치 샐러드', en:'Tuna Salad', ing:'참치 · 달걀 · 올리브 · 그린빈', kcal:400, protein:26, fiber:6},
-  {day:'목', emoji:'🌱', kr:'두부 포케 샐러드', en:'Tofu Poke Salad', ing:'두부 · 현미 · 오이 · 참깨드레싱', kcal:360, protein:20, fiber:9},
-  {day:'금', emoji:'🍤', kr:'새우 아보카도 샐러드', en:'Shrimp Avocado Salad', ing:'새우 · 아보카도 · 루꼴라 · 레몬드레싱', kcal:390, protein:24, fiber:7},
-  {day:'토', emoji:'🍗', kr:'닭가슴살 케일 샐러드', en:'Chicken Kale Salad', ing:'닭가슴살 · 케일 · 견과류 · 발사믹', kcal:410, protein:30, fiber:8},
-  {day:'일', emoji:'🥣', kr:'그릭요거트 그레인볼', en:'Greek Yogurt Grain Bowl', ing:'그릭요거트 · 귀리 · 제철베리 · 그래놀라', kcal:330, protein:19, fiber:10},
+  {day:'월', emoji:'🍤', kr:'쉬림프 에그 샐러드', en:'Shrimp Egg Salad', ing:'새우 · 달걀 · 그린채소 · 레몬드레싱', kcal:320, protein:22, fiber:6},
+  {day:'화', emoji:'🌶️', kr:'케이준 치킨 샐러드', en:'Cajun Chicken Salad', ing:'케이준 닭가슴살 · 파프리카 · 로메인', kcal:380, protein:28, fiber:7},
+  {day:'수', emoji:'🍠', kr:'군고구마 단호박 샐러드', en:'Roasted Sweet Potato Pumpkin Salad', ing:'군고구마 · 단호박 · 크런치 토핑', kcal:300, protein:12, fiber:9},
+  {day:'목', emoji:'🍗', kr:'닭가슴살 고구마 샐러드', en:'Chicken Breast Sweet Potato Salad', ing:'닭가슴살 · 고구마 · 견과류', kcal:350, protein:26, fiber:8},
+  {day:'금', emoji:'🍝', kr:'푸실리 파스타 샐러드', en:'Fusilli Pasta Salad', ing:'푸실리 파스타 · 방울토마토 · 바질오일', kcal:340, protein:14, fiber:5},
+  {day:'토', emoji:'🧀', kr:'닭가슴살 리코타 샐러드', en:'Chicken Breast Ricotta Salad', ing:'닭가슴살 · 리코타치즈 · 견과류', kcal:360, protein:27, fiber:7},
+  {day:'일', emoji:'🍯', kr:'허니 리코타 샐러드', en:'Honey Ricotta Salad', ing:'리코타치즈 · 꿀 · 제철과일', kcal:310, protein:15, fiber:6},
 ];
 
 function renderSalad(idx, todayIdx){
@@ -453,16 +606,16 @@ function renderSalad(idx, todayIdx){
    점심 메뉴 고민 해결 버튼 — 룰렛
 ========================================================= */
 const MENU = [
-  {kr:'오늘의 콥샐러드', en:'Cobb Salad', emoji:'🥗', kcal:420, protein:23, fiber:8, tags:['든든하게','저당'], blurb:'닭가슴살 120g에 아보카도까지, 씹는 맛까지 든든한 한 그릇.'},
-  {kr:'닭가슴살 스테이크', en:'Chicken Breast Steak', emoji:'🍗', kcal:280, protein:32, fiber:4, tags:['고단백','가볍게'], blurb:'단백질 32g, 운동 후 회복이 필요한 날 딱이에요.'},
-  {kr:'그릭요거트 볼', en:'Greek Yogurt Bowl', emoji:'🥣', kcal:260, protein:18, fiber:6, tags:['가볍게','저당'], blurb:'가볍게 먹고 싶은 날, 든든한 단백질은 챙기고 싶을 때.'},
-  {kr:'두부 스테이크 플레이트', en:'Tofu Steak Plate', emoji:'🌱', kcal:310, protein:21, fiber:9, tags:['저당','가볍게'], blurb:'속이 편안한 식물성 단백질 한 끼.'},
-  {kr:'연어 포케', en:'Salmon Poke', emoji:'🍣', kcal:380, protein:27, fiber:5, tags:['고단백'], blurb:'오메가3와 단백질을 동시에, 신선하게.'},
-  {kr:'계란 흰자 랩', en:'Egg White Wrap', emoji:'🌯', kcal:250, protein:22, fiber:4, tags:['가볍게','저당'], blurb:'가볍지만 허전하지 않은, 든든한 저칼로리 한 끼.'},
-  {kr:'소고기 스테이크 샐러드', en:'Beef Steak Salad', emoji:'🥩', kcal:450, protein:35, fiber:7, tags:['든든하게','고단백'], blurb:'오늘 운동 강도가 높았다면, 이 한 접시로 확실하게.'},
-  {kr:'병아리콩 커리볼', en:'Chickpea Curry Bowl', emoji:'🍛', kcal:340, protein:16, fiber:11, tags:['가볍게'], blurb:'식이섬유 11g, 속이 편안하고 든든해요.'},
-  {kr:'새우 아보카도 볼', en:'Shrimp Avocado Bowl', emoji:'🍤', kcal:300, protein:24, fiber:6, tags:['저당','고단백'], blurb:'가볍지만 단백질은 확실하게 채우는 조합.'},
-  {kr:'렌틸콩 수프 세트', en:'Lentil Soup Set', emoji:'🍲', kcal:270, protein:15, fiber:10, tags:['가볍게','저당'], blurb:'속을 따뜻하게, 식이섬유는 든든하게.'},
+  {kr:'쉬림프 에그 샐러드', en:'Shrimp Egg Salad', emoji:'🍤', kcal:320, protein:22, fiber:6, tags:['저당','고단백'], blurb:'탱글한 새우와 부드러운 달걀, 가볍게 즐기는 단백질 한 끼.'},
+  {kr:'케이준 치킨 샐러드', en:'Cajun Chicken Salad', emoji:'🌶️', kcal:380, protein:28, fiber:7, tags:['든든하게','고단백'], blurb:'매콤하게 시즈닝한 닭가슴살로 재미를 더한 든든한 한 그릇.'},
+  {kr:'군고구마 단호박 샐러드', en:'Roasted Sweet Potato Pumpkin Salad', emoji:'🍠', kcal:300, protein:12, fiber:9, tags:['가볍게'], blurb:'달큰한 고구마와 단호박으로 편안하게 채우는 한 끼.'},
+  {kr:'닭가슴살 고구마 샐러드', en:'Chicken Breast Sweet Potato Salad', emoji:'🍗', kcal:350, protein:26, fiber:8, tags:['든든하게','고단백'], blurb:'익숙한 조합, 실패 없는 든든한 단백질 샐러드.'},
+  {kr:'푸실리 파스타 샐러드', en:'Fusilli Pasta Salad', emoji:'🍝', kcal:340, protein:14, fiber:5, tags:['가볍게'], blurb:'쫄깃한 파스타에 채소를 더해 가볍게 즐기는 한 끼.'},
+  {kr:'닭가슴살 리코타 샐러드', en:'Chicken Breast Ricotta Salad', emoji:'🧀', kcal:360, protein:27, fiber:7, tags:['고단백','저당'], blurb:'부드러운 리코타와 담백한 닭가슴살의 조합.'},
+  {kr:'바질 리코타 샐러드', en:'Basil Ricotta Salad', emoji:'🌿', kcal:290, protein:13, fiber:6, tags:['가볍게','저당'], blurb:'향긋한 바질 향이 산뜻하게 입맛을 돋우는 한 그릇.'},
+  {kr:'당근 라페 리코타 샐러드', en:'Carrot Rape Ricotta Salad', emoji:'🥕', kcal:270, protein:11, fiber:8, tags:['가볍게','저당'], blurb:'아삭한 당근 라페로 상큼하게, 부담 없이.'},
+  {kr:'닭가슴살 과카몰리 통밀 프로틴 랩', en:'Chicken Guacamole Wheat Protein Wrap', emoji:'🌯', kcal:410, protein:30, fiber:9, tags:['든든하게','고단백','NEW'], blurb:'신제품! 아보카도 과카몰리와 통밀 랩의 든든한 조합.'},
+  {kr:'불고기 치즈 통밀 프로틴 랩', en:'Bulgogi Cheese Wheat Protein Wrap', emoji:'🌯', kcal:430, protein:27, fiber:6, tags:['든든하게','NEW'], blurb:'신제품! 불고기와 치즈, 든든하게 배부른 한 끼.'},
 ];
 
 const MOODS = ['전체','가볍게','든든하게','저당','고단백'];
@@ -544,11 +697,38 @@ function runRoll(){
 document.getElementById('rollBtn').addEventListener('click', runRoll);
 document.getElementById('rerollBtn').addEventListener('click', runRoll);
 
-document.getElementById('confirmBtn').addEventListener('click', ()=>{
+function showToast(msg){
   const toast = document.getElementById('toast');
+  toast.textContent = msg;
   toast.classList.add('show');
   clearTimeout(window.__toastTimer);
   window.__toastTimer = setTimeout(()=>toast.classList.remove('show'), 2500);
+}
+
+document.getElementById('confirmBtn').addEventListener('click', ()=>{
+  showToast('좋은 선택이에요! 🎉 오늘도 균형있게.');
+});
+
+/* =========================================================
+   상품 문의 모달
+========================================================= */
+const inquiryOverlay = document.getElementById('inquiryOverlay');
+function openInquiry(){ inquiryOverlay.classList.add('show'); }
+function closeInquiry(){ inquiryOverlay.classList.remove('show'); }
+
+document.getElementById('inquiryBtn').addEventListener('click', openInquiry);
+document.getElementById('inquiryClose').addEventListener('click', closeInquiry);
+inquiryOverlay.addEventListener('click', (e)=>{ if(e.target===inquiryOverlay) closeInquiry(); });
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeInquiry(); });
+
+document.getElementById('copyEmailBtn').addEventListener('click', async ()=>{
+  const email = document.getElementById('inquiryEmail').textContent;
+  try{
+    await navigator.clipboard.writeText(email);
+    showToast('이메일 주소를 복사했어요 📋');
+  }catch(e){
+    showToast('직접 선택해서 복사해주세요: '+email);
+  }
 });
 </script>
 </body>
