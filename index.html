@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>강혜민의 홈페이지</title>
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fdf6f0;
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    text-align: center;
+  }
+  .greeting {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+  .date {
+    font-size: 1.1rem;
+    color: #888;
+  }
+</style>
+</head>
+<body>
+  <div>
+    <p class="greeting">안녕하세요, 강혜민입니다</p>
+    <p class="date" id="today"></p>
+  </div>
+  <script>
+    const today = new Date();
+    const formatted = today.toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      weekday: "long",
+    });
+    document.getElementById("today").textContent = formatted;
+  </script>
+</body>
+</html>
