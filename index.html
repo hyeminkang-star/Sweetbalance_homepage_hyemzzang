@@ -795,7 +795,9 @@ let tg = null; // active game state
 function tgPickWord(prevWord){
   let pool = TYPING_WORDS;
   if(prevWord && pool.length > 1) pool = pool.filter(w=>w!==prevWord);
-  return pool[Math.floor(Math.random()*pool.length)];
+  // NFC로 정규화 — 한글 자모 결합 방식(NFC/NFD)이 OS·브라우저마다 달라
+  // 눈에는 똑같아 보여도 문자열 비교가 실패하는 것을 막기 위함
+  return pool[Math.floor(Math.random()*pool.length)].normalize('NFC');
 }
 
 function tgRenderTarget(typed){
@@ -822,6 +824,7 @@ function tgUpdateStats(){
 
 function tgNextWord(){
   tg.currentWord = tgPickWord(tg.currentWord);
+  tg.lastTyped = '';
   tgEl.input.value = '';
   tgRenderTarget('');
 }
@@ -829,7 +832,7 @@ function tgNextWord(){
 function tgStart(){
   tg = {
     timeLeft: GAME_SECONDS, score: 0, correctChars: 0,
-    keystrokes: 0, goodKeystrokes: 0, currentWord: '', interval: null,
+    keystrokes: 0, goodKeystrokes: 0, currentWord: '', lastTyped: '', interval: null,
   };
   tgEl.result.classList.remove('show');
   tgEl.startBtn.style.display = 'none';
@@ -866,9 +869,15 @@ function tgEnd(){
   tgEl.result.classList.add('show');
 }
 
-tgEl.input.addEventListener('input', ()=>{
+function tgHandleTyping(){
   if(!tg || tg.timeLeft <= 0) return;
-  const typed = tgEl.input.value;
+  // 입력값도 NFC로 정규화해서 currentWord와 같은 방식으로 비교
+  const typed = tgEl.input.value.normalize('NFC');
+  // 'input'과 'compositionend'가 같은 값을 두 번 보고하는 경우를 걸러
+  // 타수/정확도가 중복 집계되지 않게 한다.
+  if(typed === tg.lastTyped) return;
+  tg.lastTyped = typed;
+
   const word = tg.currentWord;
 
   tg.keystrokes++;
@@ -882,7 +891,12 @@ tgEl.input.addEventListener('input', ()=>{
     tgNextWord();
   }
   tgUpdateStats();
-});
+}
+
+tgEl.input.addEventListener('input', tgHandleTyping);
+// 한글 IME는 조합 중간에도 'input'이 발생하지만, 일부 브라우저는 조합이 끝난
+// 직후(compositionend)에야 완성된 값을 반영하므로 한 번 더 확인해준다.
+tgEl.input.addEventListener('compositionend', tgHandleTyping);
 
 tgEl.startBtn.addEventListener('click', tgStart);
 tgEl.retryBtn.addEventListener('click', tgStart);
