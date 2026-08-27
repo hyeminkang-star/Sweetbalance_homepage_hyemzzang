@@ -3,43 +3,924 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>강혜민의 홈페이지</title>
+<title>스윗밸런스 | Eat fresh, be your Best.</title>
+<meta name="description" content="운동하고 다이어트하는 당신을 위한 균형 잡힌 한 끼, 스윗밸런스.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  html, body {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #fdf6f0;
-    font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-    text-align: center;
+  /* ===== Design tokens (SweetBalance Brand Design System Manual 기반) ===== */
+  :root{
+    --g:#00614E; --g2:#007C5E; --sw:#FDFFE6;
+    --seed:#84BA45; --soil:#896431; --sky:#50AADC;
+    --ink:#1B2A24; --char:#3A4742; --slate:#6B7571;
+    --mist:#C8CEC9; --paper:#F6F4E8; --white:#FFFFFF;
+    --border:rgba(0,97,78,.15); --div:rgba(0,97,78,.09);
+    --sh-sm:0 2px 8px rgba(27,42,36,.07);
+    --sh-md:0 8px 24px rgba(27,42,36,.10);
+    --sh-brand:0 10px 28px rgba(0,97,78,.22);
+    --r-sm:8px; --r-md:14px; --r-lg:20px; --r-xl:28px; --r-2xl:36px; --r-pill:999px;
+    --en:'Noto Sans','Noto Sans KR',sans-serif;
+    --kr:'Noto Sans KR','Noto Sans',sans-serif;
+    --display-en:'Noto Sans','Noto Sans KR',sans-serif;
+    --display-kr:'Noto Sans KR','Noto Sans',sans-serif;
+    --ease-soft:cubic-bezier(.22,.61,.36,1);
+    --ease-spring:cubic-bezier(.34,1.56,.64,1);
   }
-  .greeting {
-    font-size: 2rem;
-    color: #333;
-    margin-bottom: 0.5rem;
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:var(--kr);
+    background:var(--sw);
+    color:var(--ink);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
   }
-  .date {
-    font-size: 1.1rem;
-    color: #888;
+  img,svg{display:block;max-width:100%;}
+  button{font:inherit;}
+  a{color:inherit;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
+  section{padding:96px 0;}
+  .eyebrow{
+    font-family:var(--en);font-weight:700;font-size:12px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--g);margin-bottom:14px;
   }
+  .sec-title{
+    font-family:var(--display-kr);font-weight:700;font-size:40px;letter-spacing:-.02em;
+    line-height:1.25;color:var(--ink);margin-bottom:14px;
+  }
+  .sec-sub{font-size:16px;line-height:1.7;color:var(--char);max-width:560px;}
+  .pill-badge{
+    display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--r-pill);
+    font-size:12px;font-weight:700;letter-spacing:.02em;background:rgba(0,97,78,.08);color:var(--g);
+  }
+  .pill-badge.accent{background:var(--seed);color:#fff;}
+  .pill-badge.new{background:#D64545;color:#fff;}
+
+  /* ===== Veggie bounce strip ===== */
+  .veggie-row{display:flex;justify-content:center;align-items:flex-end;gap:clamp(14px,4vw,34px);padding:18px 24px;flex-wrap:wrap;}
+  .veggie-row span{font-size:26px;display:inline-block;animation:veggie-bounce 2.2s var(--ease-spring) infinite;}
+  @keyframes veggie-bounce{
+    0%,100%{transform:translateY(0) scale(1);}
+    28%{transform:translateY(-15px) scale(1.06);}
+    46%{transform:translateY(0) scale(.95);}
+    64%{transform:translateY(-6px) scale(1.02);}
+    80%{transform:translateY(0) scale(1);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .veggie-row span{animation:none;}
+  }
+
+  /* ===== Buttons ===== */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    border:none;border-radius:var(--r-pill);font-family:var(--en);font-weight:600;font-size:14px;
+    padding:14px 28px;cursor:pointer;transition:transform 180ms var(--ease-soft),box-shadow 180ms var(--ease-soft),background 180ms var(--ease-soft),opacity 180ms var(--ease-soft);
+  }
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:var(--g);color:var(--sw);box-shadow:var(--sh-brand);}
+  .btn-primary:hover{background:var(--g2);transform:translateY(-2px);box-shadow:var(--sh-brand);}
+  .btn-secondary{background:transparent;color:var(--g);border:1.5px solid var(--g);}
+  .btn-secondary:hover{background:rgba(0,97,78,.06);}
+  .btn-ghost{background:transparent;color:var(--g);}
+  .btn-ghost:hover{background:rgba(0,97,78,.06);}
+  .btn-accent{background:var(--seed);color:#fff;box-shadow:0 10px 24px rgba(132,186,69,.28);}
+  .btn-accent:hover{transform:translateY(-2px);}
+  .btn:disabled{opacity:.5;cursor:default;transform:none;}
+  .btn-lg{padding:18px 36px;font-size:16px;}
+
+  /* ===== Header ===== */
+  header{
+    position:sticky;top:0;z-index:50;background:rgba(253,255,230,.9);backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--div);
+  }
+  header .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;}
+  .logo{display:flex;align-items:center;gap:8px;font-family:var(--display-en);font-weight:400;font-size:21px;color:var(--g);letter-spacing:.01em;text-decoration:none;}
+  .logo .mark{width:32px;height:16px;flex-shrink:0;}
+  header nav{display:flex;align-items:center;gap:20px;}
+  header nav .nav-links{display:flex;gap:24px;}
+  header nav a{font-size:14px;font-weight:600;color:var(--char);text-decoration:none;transition:color 150ms var(--ease-soft);}
+  header nav a:hover{color:var(--g);}
+  .icon-btn{
+    width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);background:#fff;
+    color:var(--g);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:all 160ms var(--ease-soft);flex-shrink:0;
+  }
+  .icon-btn:hover{border-color:var(--g);background:rgba(0,97,78,.06);}
+  @media (max-width:640px){ header nav .nav-links{display:none;} }
+
+  /* ===== Hero ===== */
+  #hero{padding:88px 0 96px;position:relative;overflow:hidden;}
+  #hero .wrap{max-width:680px;}
+  #hero .stats{display:flex;gap:28px;margin-top:36px;flex-wrap:wrap;}
+  #hero .stat b{display:block;font-family:var(--en);font-weight:800;font-size:26px;color:var(--g);letter-spacing:-.01em;}
+  #hero .stat span{font-size:12px;color:var(--slate);}
+  #hero h1{
+    font-family:var(--display-kr);font-weight:700;font-size:52px;line-height:1.28;letter-spacing:-.02em;
+    color:var(--ink);margin-bottom:18px;
+  }
+  #hero h1 em{font-style:normal;color:var(--g);}
+  #hero .lede{font-size:17px;line-height:1.75;color:var(--char);max-width:460px;margin-bottom:32px;}
+  #hero .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;}
+  #hero .badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;}
+
+  @media (max-width:860px){
+    #hero h1{font-size:38px;}
+  }
+
+  /* ===== Section: 신제품 (New Arrival) ===== */
+  #newp{background:var(--sw);}
+  .new-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:32px;}
+  .new-card{
+    background:#fff;border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;
+    box-shadow:var(--sh-sm);transition:transform 180ms var(--ease-soft),box-shadow 180ms var(--ease-soft);
+    position:relative;
+  }
+  .new-card:hover{transform:translateY(-4px);box-shadow:var(--sh-md);}
+  .new-card.soldout{opacity:.55;filter:grayscale(.5);}
+  .new-card .nc-visual{
+    height:120px;background:linear-gradient(150deg,#EFE7D2,#DCC79A);display:flex;align-items:center;
+    justify-content:center;font-size:52px;position:relative;
+  }
+  .new-card .nc-badge{position:absolute;top:10px;left:10px;background:#D64545;color:#fff;font-size:10px;font-weight:700;padding:4px 9px;border-radius:var(--r-pill);letter-spacing:.04em;}
+  .new-card .nc-stock{position:absolute;top:10px;right:10px;background:rgba(27,42,36,.75);color:#fff;font-size:10px;font-weight:700;padding:4px 9px;border-radius:var(--r-pill);}
+  .new-card .nc-body{padding:16px;}
+  .new-card .nc-name{font-size:13px;font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:10px;min-height:36px;}
+  .new-card .nc-price{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;}
+  .new-card .nc-price b{font-family:var(--en);font-weight:800;font-size:16px;color:var(--g);}
+  .new-card .nc-price s{font-size:11px;color:var(--mist);}
+  .new-note{
+    display:flex;align-items:center;gap:8px;margin-top:24px;font-size:13px;color:var(--char);
+  }
+  @media (max-width:860px){ .new-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:480px){ .new-grid{grid-template-columns:1fr 1fr;gap:10px;} .new-card .nc-name{font-size:12px;min-height:32px;} }
+
+  /* ===== Section: 오늘의 샐러드 (product) ===== */
+  #product{background:var(--paper);}
+  .day-picker{display:flex;gap:8px;flex-wrap:wrap;margin:32px 0 28px;}
+  .day-chip{
+    border:1.5px solid var(--border);background:#fff;color:var(--char);border-radius:var(--r-pill);
+    padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;transition:all 160ms var(--ease-soft);
+  }
+  .day-chip .d{display:block;font-size:10px;color:var(--slate);font-weight:600;}
+  .day-chip.active{background:var(--g);border-color:var(--g);color:var(--sw);box-shadow:var(--sh-brand);}
+  .day-chip.active .d{color:rgba(253,255,230,.75);}
+  .day-chip:hover:not(.active){border-color:var(--g);color:var(--g);}
+
+  .salad-card{
+    display:grid;grid-template-columns:220px 1fr;gap:32px;background:#fff;border:1px solid var(--border);
+    border-radius:var(--r-2xl);padding:32px;box-shadow:var(--sh-md);align-items:center;
+  }
+  .salad-visual{
+    height:200px;border-radius:var(--r-xl);background:linear-gradient(150deg,#DCEBD2,#A9CE8C);
+    display:flex;align-items:center;justify-content:center;font-size:76px;position:relative;
+  }
+  .salad-visual .tag{position:absolute;top:12px;left:12px;background:var(--g);color:var(--sw);font-size:10px;font-weight:700;padding:4px 10px;border-radius:var(--r-pill);letter-spacing:.04em;}
+  .salad-info .kr-name{font-family:var(--display-kr);font-weight:700;font-size:26px;color:var(--ink);margin-bottom:6px;}
+  .salad-info .en-name{font-family:var(--en);font-size:13px;color:var(--slate);margin-bottom:14px;}
+  .salad-info .ingredients{font-size:14px;color:var(--char);margin-bottom:18px;line-height:1.7;}
+  .macro-row{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:20px;}
+  .macro{display:flex;flex-direction:column;}
+  .macro b{font-family:var(--en);font-weight:800;font-size:20px;color:var(--g);}
+  .macro span{font-size:11px;color:var(--slate);}
+  @media (max-width:720px){ .salad-card{grid-template-columns:1fr;} }
+
+  /* ===== Section: 점심 메뉴 룰렛 (feature / hero of page) ===== */
+  #feature{background:var(--g);color:var(--sw);position:relative;overflow:hidden;}
+  #feature .bg-text{
+    position:absolute;top:-40px;left:-10px;font-family:var(--display-en);font-size:220px;
+    color:rgba(253,255,230,.05);white-space:nowrap;pointer-events:none;line-height:1;
+  }
+  #feature .eyebrow{color:var(--seed);}
+  #feature .sec-title{color:var(--sw);}
+  #feature .sec-sub{color:rgba(253,255,230,.78);}
+  .feature-panel{
+    margin-top:36px;background:rgba(253,255,230,.06);border:1px solid rgba(253,255,230,.16);
+    border-radius:var(--r-2xl);padding:40px;position:relative;
+  }
+  .mood-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px;}
+  .mood-chip{
+    border:1.5px solid rgba(253,255,230,.35);background:transparent;color:rgba(253,255,230,.9);
+    border-radius:var(--r-pill);padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;
+    transition:all 160ms var(--ease-soft);
+  }
+  .mood-chip.active{background:var(--seed);border-color:var(--seed);color:#fff;}
+  .mood-chip:hover:not(.active){border-color:var(--seed);}
+
+  .roll-stage{display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;}
+  #rollBtn{min-width:260px;}
+  .roll-hint{font-size:13px;color:rgba(253,255,230,.6);}
+
+  .result-card{
+    width:100%;max-width:440px;background:var(--sw);color:var(--ink);border-radius:var(--r-xl);
+    padding:28px;box-shadow:0 20px 48px rgba(0,0,0,.22);display:none;text-align:left;
+    opacity:0;transform:scale(.92) translateY(10px);
+  }
+  .result-card.show{display:block;animation:pop 420ms var(--ease-spring) forwards;}
+  @keyframes pop{to{opacity:1;transform:scale(1) translateY(0);}}
+  .result-card .top{display:flex;align-items:center;gap:16px;margin-bottom:16px;}
+  .result-card .emoji{
+    width:64px;height:64px;border-radius:var(--r-lg);background:var(--paper);display:flex;
+    align-items:center;justify-content:center;font-size:34px;flex-shrink:0;
+  }
+  .result-card .kr-name{font-family:var(--display-kr);font-weight:700;font-size:22px;}
+  .result-card .en-name{font-size:12px;color:var(--slate);margin-top:2px;}
+  .result-card .blurb{font-size:14px;color:var(--char);line-height:1.7;margin-bottom:16px;}
+  .result-card .macro-row{margin-bottom:16px;}
+  .result-card .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
+  .result-card .tag-chip{background:rgba(0,97,78,.08);color:var(--g);font-size:11px;font-weight:700;padding:4px 10px;border-radius:var(--r-pill);}
+  .result-card .actions{display:flex;gap:10px;}
+  .result-card .actions .btn{flex:1;padding:12px 16px;font-size:13px;}
+
+  .spin-line{
+    font-family:var(--en);font-weight:700;font-size:15px;color:rgba(253,255,230,.5);
+    height:20px;letter-spacing:.02em;
+  }
+
+  .toast{
+    position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:var(--ink);color:var(--sw);
+    padding:14px 22px;border-radius:var(--r-pill);font-size:14px;font-weight:600;box-shadow:var(--sh-md);
+    opacity:0;pointer-events:none;transition:opacity 220ms var(--ease-soft),transform 220ms var(--ease-soft);
+    z-index:200;
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0);}
+
+  @media (max-width:640px){
+    .feature-panel{padding:24px;}
+    #feature .bg-text{font-size:120px;}
+  }
+
+  /* ===== Section: 샐러드 이름 타자 게임 ===== */
+  #typing{background:var(--sw);}
+  .typing-panel{
+    margin-top:32px;background:#fff;border:1px solid var(--border);border-radius:var(--r-2xl);
+    padding:40px;box-shadow:var(--sh-md);
+  }
+  .typing-stats{display:flex;gap:36px;flex-wrap:wrap;margin-bottom:28px;}
+  .typing-stats .ts-item{display:flex;flex-direction:column;}
+  .typing-stats .ts-item b{font-family:var(--en);font-weight:800;font-size:30px;color:var(--g);letter-spacing:-.01em;}
+  .typing-stats .ts-item span{font-size:11px;color:var(--slate);}
+  .typing-target{
+    font-family:var(--display-kr);font-weight:700;font-size:26px;color:var(--slate);text-align:center;
+    padding:36px 20px;background:var(--paper);border-radius:var(--r-lg);margin-bottom:18px;
+    letter-spacing:.01em;line-height:1.4;min-height:96px;display:flex;align-items:center;justify-content:center;
+  }
+  .typing-target .ch{transition:color 80ms var(--ease-soft);}
+  .typing-target .ch.ok{color:var(--g);}
+  .typing-target .ch.bad{color:#D64545;background:rgba(214,69,69,.12);border-radius:3px;}
+  .typing-input{
+    width:100%;font-size:19px;padding:16px 20px;border-radius:var(--r-md);border:2px solid var(--border);
+    text-align:center;font-family:var(--kr);outline:none;color:var(--ink);background:#fff;
+    transition:border-color 160ms var(--ease-soft);
+  }
+  .typing-input:focus{border-color:var(--g);}
+  .typing-input:disabled{background:var(--paper);color:var(--mist);}
+  .typing-actions{display:flex;justify-content:center;margin-top:24px;}
+  .typing-result{
+    margin-top:8px;text-align:center;display:none;
+  }
+  .typing-result.show{display:block;animation:pop 420ms var(--ease-spring) forwards;}
+  .typing-result .tr-headline{font-family:var(--display-kr);font-weight:700;font-size:22px;color:var(--ink);margin-bottom:8px;}
+  .typing-result .tr-sub{font-size:14px;color:var(--char);margin-bottom:20px;}
+  @media (max-width:640px){
+    .typing-panel{padding:24px;}
+    .typing-stats{gap:22px;}
+    .typing-stats .ts-item b{font-size:24px;}
+    .typing-target{font-size:20px;padding:28px 16px;}
+  }
+
+  /* ===== Brand footer ===== */
+  #brand{background:var(--g);color:var(--sw);padding:96px 0 0;}
+  #brand .wrap{text-align:center;display:flex;flex-direction:column;align-items:center;}
+  .brand-logo{display:flex;flex-direction:column;align-items:center;margin-bottom:36px;}
+  .brand-logo .word{font-family:var(--display-en);font-weight:400;font-size:52px;line-height:1;color:var(--sw);letter-spacing:.01em;}
+  .brand-logo .word.w2{margin-top:2px;}
+  .brand-logo .logo-smile{width:92px;height:46px;border:7px solid var(--sw);border-top:none;border-left-color:transparent;border-right-color:transparent;border-radius:0 0 92px 92px;margin-top:10px;}
+  @media (max-width:640px){ .brand-logo .word{font-size:38px;} .brand-logo .logo-smile{width:70px;height:35px;border-width:5px;} }
+  #brand .mission{font-family:var(--display-kr);font-size:28px;line-height:1.5;max-width:640px;margin-bottom:14px;}
+  #brand .mission-en{font-size:14px;font-style:italic;color:rgba(253,255,230,.6);margin-bottom:40px;}
+  #brand .slogan{font-family:var(--en);font-weight:800;font-size:30px;letter-spacing:-.02em;margin-bottom:44px;}
+  .personality-row{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-bottom:56px;}
+  .personality-row .p-card{
+    background:rgba(253,255,230,.08);border:1px solid rgba(253,255,230,.14);border-radius:var(--r-lg);
+    padding:20px 24px;width:180px;
+  }
+  .personality-row .p-card b{display:block;font-family:var(--en);font-weight:800;font-size:18px;margin-bottom:2px;}
+  .personality-row .p-card i{display:block;font-style:normal;font-family:var(--display-kr);font-size:13px;color:rgba(253,255,230,.7);margin-bottom:8px;}
+  .personality-row .p-card p{font-size:12px;line-height:1.6;color:rgba(253,255,230,.75);}
+  #brand footer{
+    border-top:1px solid rgba(253,255,230,.14);padding:24px;width:100%;display:flex;justify-content:space-between;
+    font-size:12px;color:rgba(253,255,230,.55);font-family:var(--en);flex-wrap:wrap;gap:8px;
+  }
+  @media (max-width:640px){ #brand footer{justify-content:center;text-align:center;} }
+
+  /* ===== 상품 문의 modal ===== */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(27,42,36,.55);display:flex;align-items:center;justify-content:center;
+    padding:24px;z-index:300;opacity:0;pointer-events:none;transition:opacity 220ms var(--ease-soft);
+  }
+  .modal-overlay.show{opacity:1;pointer-events:auto;}
+  .modal-card{
+    background:#fff;border-radius:var(--r-xl);padding:36px;max-width:380px;width:100%;text-align:center;
+    box-shadow:0 24px 56px rgba(0,0,0,.25);position:relative;transform:scale(.94) translateY(8px);
+    transition:transform 220ms var(--ease-spring);
+  }
+  .modal-overlay.show .modal-card{transform:scale(1) translateY(0);}
+  .modal-close{
+    position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:none;
+    background:rgba(0,97,78,.08);color:var(--g);font-size:14px;cursor:pointer;display:flex;
+    align-items:center;justify-content:center;
+  }
+  .modal-icon{width:56px;height:56px;border-radius:50%;background:rgba(0,97,78,.08);display:flex;
+    align-items:center;justify-content:center;font-size:26px;margin:0 auto 18px;}
+  .modal-card h3{font-family:var(--display-kr);font-size:22px;font-weight:700;color:var(--ink);margin-bottom:10px;}
+  .modal-card p{font-size:13px;color:var(--char);line-height:1.7;margin-bottom:22px;}
+  .email-box{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--paper);
+    border:1px solid var(--border);border-radius:var(--r-md);padding:12px 16px;
+  }
+  .email-box span{font-family:var(--en);font-size:14px;font-weight:700;color:var(--g);word-break:break-all;text-align:left;}
+  .email-box button{flex-shrink:0;padding:9px 16px;font-size:12px;}
 </style>
 </head>
 <body>
-  <div>
-    <p class="greeting">안녕하세요, 강혜민입니다</p>
-    <p class="date" id="today"></p>
+
+<header>
+  <div class="wrap">
+    <a href="#hero" class="logo">
+      <svg class="mark" viewBox="0 0 40 20"><path d="M4 4 Q20 20 36 4" stroke="#00614E" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
+      Sweet Balance
+    </a>
+    <nav>
+      <span class="nav-links">
+        <a href="#newp">신제품</a>
+        <a href="#product">오늘의 샐러드</a>
+        <a href="#feature">점심 메뉴 뽑기</a>
+        <a href="#typing">타자 게임</a>
+        <a href="#brand">브랜드 소개</a>
+      </span>
+      <button class="icon-btn" id="inquiryBtn" aria-label="상품 문의" title="상품 문의">✉️</button>
+      <a href="#feature" class="btn btn-primary" style="padding:10px 20px;font-size:13px;">점심 메뉴 뽑기</a>
+    </nav>
   </div>
-  <script>
-    const today = new Date();
-    const formatted = today.toLocaleDateString("ko-KR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      weekday: "long",
+</header>
+
+<div class="veggie-row" aria-hidden="true">
+  <span style="animation-delay:0s;">🥕</span>
+  <span style="animation-delay:.15s;">🥦</span>
+  <span style="animation-delay:.3s;">🍅</span>
+  <span style="animation-delay:.45s;">🥬</span>
+  <span style="animation-delay:.6s;">🌽</span>
+  <span style="animation-delay:.75s;">🫑</span>
+  <span style="animation-delay:.9s;">🥒</span>
+</div>
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="wrap">
+    <div>
+      <span class="pill-badge accent">🥗 운동하는 당신을 위한 균형식</span>
+      <h1 style="margin-top:18px;">이 정도면,<br><em>나도 할 수 있겠다.</em></h1>
+      <p class="lede">거창한 다이어트 말고, 오늘 한 끼부터. 단백질과 채소를 챙기는 일이 스윗밸런스와 함께라면 훨씬 가벼워져요.</p>
+      <div class="badges">
+        <span class="pill-badge">저당</span>
+        <span class="pill-badge">고단백</span>
+        <span class="pill-badge">식이섬유 풍부</span>
+      </div>
+      <div class="cta-row">
+        <a href="#product" class="btn btn-primary btn-lg">오늘의 메뉴 보기</a>
+        <a href="#feature" class="btn btn-secondary btn-lg">점심 메뉴 고민 끝내기</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>23g+</b><span>평균 단백질</span></div>
+        <div class="stat"><b>420kcal</b><span>부담 없는 한 끼</span></div>
+        <div class="stat"><b>8g+</b><span>평균 식이섬유</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NEW ARRIVAL: 통밀 프로틴 랩 ============ -->
+<section id="newp">
+  <div class="wrap">
+    <span class="pill-badge new">🔥 따끈따끈한 신제품</span>
+    <h2 class="sec-title" style="margin-top:14px;">통밀 프로틴 랩</h2>
+    <p class="sec-sub">씹는 든든함까지 챙긴 신메뉴. 통밀 랩에 단백질 재료를 꽉 채웠어요.</p>
+
+    <div class="new-grid">
+      <div class="new-card">
+        <div class="nc-visual">🌯<span class="nc-badge">NEW</span></div>
+        <div class="nc-body">
+          <div class="nc-name">닭가슴살 과카몰리 통밀 프로틴 랩</div>
+          <div class="nc-price"><b>5,910원</b><s>6,600원</s></div>
+        </div>
+      </div>
+      <div class="new-card">
+        <div class="nc-visual">🌯<span class="nc-badge">NEW</span><span class="nc-stock">품절임박</span></div>
+        <div class="nc-body">
+          <div class="nc-name">풀드포크 체다치즈 통밀 프로틴 랩</div>
+          <div class="nc-price"><b>6,210원</b><s>6,900원</s></div>
+        </div>
+      </div>
+      <div class="new-card soldout">
+        <div class="nc-visual">🌯<span class="nc-stock">품절</span></div>
+        <div class="nc-body">
+          <div class="nc-name">훈제오리 에그마요 통밀 프로틴 랩</div>
+          <div class="nc-price"><b>6,210원</b><s>6,900원</s></div>
+        </div>
+      </div>
+      <div class="new-card">
+        <div class="nc-visual">🌯<span class="nc-badge">NEW</span><span class="nc-stock">품절임박</span></div>
+        <div class="nc-body">
+          <div class="nc-name">불고기 치즈 통밀 프로틴 랩</div>
+          <div class="nc-price"><b>5,910원</b><s>6,600원</s></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="new-note">🛒 현재 마켓컬리에서 만나보실 수 있어요.</div>
+  </div>
+</section>
+
+<!-- ============ PRODUCT: 오늘의 샐러드 ============ -->
+<section id="product">
+  <div class="wrap">
+    <div class="eyebrow">Today's Salad</div>
+    <h2 class="sec-title">오늘의 샐러드</h2>
+    <p class="sec-sub">요일마다 다른 조합으로, 물리지 않게. 운동 전후 아무 때나 부담 없이 먹을 수 있도록 설계했어요.</p>
+
+    <div class="day-picker" id="dayPicker"></div>
+
+    <div class="salad-card" id="saladCard">
+      <div class="salad-visual" id="saladVisual">
+        <span class="tag" id="saladBadge">TODAY</span>
+        <span id="saladEmoji">🥗</span>
+      </div>
+      <div class="salad-info">
+        <div class="kr-name" id="saladKr">콥샐러드</div>
+        <div class="en-name" id="saladEn">Cobb Salad</div>
+        <div class="ingredients" id="saladIngredients">닭가슴살 · 달걀 · 아보카도 · 저당 드레싱</div>
+        <div class="macro-row">
+          <div class="macro"><b id="saladKcal">420</b><span>kcal</span></div>
+          <div class="macro"><b id="saladProtein">23g</b><span>단백질</span></div>
+          <div class="macro"><b id="saladFiber">8g</b><span>식이섬유</span></div>
+        </div>
+        <a href="#feature" class="btn btn-ghost" style="padding:10px 18px;font-size:13px;">오늘 뭐 먹을지 더 고민된다면 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURE: 점심 메뉴 고민 해결 버튼 ============ -->
+<section id="feature">
+  <div class="bg-text">SweetBalance</div>
+  <div class="wrap" style="position:relative;">
+    <div class="eyebrow">Lunch Roulette</div>
+    <h2 class="sec-title">점심 메뉴 고민 해결 버튼</h2>
+    <p class="sec-sub">"오늘 뭐 먹지"를 매일 반복하지 마세요. 원하는 스타일만 고르면, 스윗밸런스가 딱 맞는 한 끼를 골라드려요.</p>
+
+    <div class="feature-panel">
+      <div class="mood-row" id="moodRow"></div>
+
+      <div class="roll-stage">
+        <button class="btn btn-accent btn-lg" id="rollBtn">🎲 오늘 점심 뽑기</button>
+        <div class="spin-line" id="spinLine"></div>
+
+        <div class="result-card" id="resultCard">
+          <div class="top">
+            <div class="emoji" id="resEmoji">🥗</div>
+            <div>
+              <div class="kr-name" id="resKr">콥샐러드</div>
+              <div class="en-name" id="resEn">Cobb Salad</div>
+            </div>
+          </div>
+          <div class="blurb" id="resBlurb"></div>
+          <div class="macro-row">
+            <div class="macro"><b id="resKcal">420</b><span>kcal</span></div>
+            <div class="macro"><b id="resProtein">23g</b><span>단백질</span></div>
+            <div class="macro"><b id="resFiber">8g</b><span>식이섬유</span></div>
+          </div>
+          <div class="tags" id="resTags"></div>
+          <div class="actions">
+            <button class="btn btn-ghost" id="rerollBtn" style="border:1.5px solid var(--border);">다시 뽑기</button>
+            <button class="btn btn-primary" id="confirmBtn">좋아요, 이걸로 할래요!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MINI GAME: 샐러드 이름 타자 게임 ============ -->
+<section id="typing">
+  <div class="wrap">
+    <div class="eyebrow">Mini Game</div>
+    <h2 class="sec-title">샐러드 이름 타자 게임</h2>
+    <p class="sec-sub">어려운 샐러드 이름, 얼마나 빨리 칠 수 있나요? 60초 동안 도전해보세요.</p>
+
+    <div class="typing-panel">
+      <div class="typing-stats">
+        <div class="ts-item"><b id="tgSpeed">0</b><span>타/분</span></div>
+        <div class="ts-item"><b id="tgScore">0</b><span>맞춘 개수</span></div>
+        <div class="ts-item"><b id="tgAccuracy">100%</b><span>정확도</span></div>
+        <div class="ts-item"><b id="tgTime">60</b><span>남은 시간(초)</span></div>
+      </div>
+
+      <div class="typing-target" id="typingTarget">🎮 게임 시작 버튼을 눌러주세요</div>
+      <input type="text" id="typingInput" class="typing-input" placeholder="여기에 그대로 입력하세요" disabled autocomplete="off" autocapitalize="off" spellcheck="false">
+
+      <div class="typing-actions">
+        <button class="btn btn-accent btn-lg" id="typingStartBtn">🎮 게임 시작</button>
+      </div>
+
+      <div class="typing-result" id="typingResult">
+        <div class="tr-headline" id="trHeadline"></div>
+        <div class="tr-sub" id="trSub"></div>
+        <button class="btn btn-secondary" id="typingRetryBtn">다시 도전하기</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="veggie-row" aria-hidden="true">
+  <span style="animation-delay:.1s;">🍆</span>
+  <span style="animation-delay:.25s;">🥕</span>
+  <span style="animation-delay:.4s;">🥦</span>
+  <span style="animation-delay:.55s;">🍓</span>
+  <span style="animation-delay:.7s;">🥬</span>
+  <span style="animation-delay:.85s;">🍅</span>
+</div>
+
+<!-- ============ BRAND ============ -->
+<section id="brand">
+  <div class="wrap">
+    <div class="brand-logo">
+      <span class="word w1">Sweet</span>
+      <span class="word w2">Balance</span>
+      <div class="logo-smile"></div>
+    </div>
+    <div class="mission">진정으로 건강한 식사를 통해,<br>누구나 목표와 행복을 이룰 수 있는 삶을 만듭니다.</div>
+    <div class="mission-en">"Through truly healthy meals, we help everyone build a life where they can reach their goals and find happiness."</div>
+    <div class="slogan">Eat fresh, be your Best.</div>
+
+    <div class="personality-row">
+      <div class="p-card"><b>Warm</b><i>따뜻한</i><p>건강을 훈계하지 않고 응원합니다.</p></div>
+      <div class="p-card"><b>Fresh</b><i>신선한</i><p>가볍고 선명하게, 군더더기 없이.</p></div>
+      <div class="p-card"><b>Honest</b><i>정직한</i><p>숫자를 숨기지 않습니다. 숫자가 곧 신뢰입니다.</p></div>
+    </div>
+
+    <footer>
+      <span>© 2026 SWB Corporation. All rights reserved.</span>
+      <span style="font-style:italic;">진정으로 건강한 한 끼, 오늘도 균형있게.</span>
+    </footer>
+  </div>
+</section>
+
+<div class="modal-overlay" id="inquiryOverlay">
+  <div class="modal-card">
+    <button class="modal-close" id="inquiryClose" aria-label="닫기">✕</button>
+    <div class="modal-icon">✉️</div>
+    <h3>상품 문의</h3>
+    <p>궁금하신 점이 있다면 아래 대표 이메일로<br>편하게 남겨주세요. 빠르게 답변드릴게요.</p>
+    <div class="email-box">
+      <span id="inquiryEmail">online@sweetbalance.kr</span>
+      <button class="btn btn-secondary" id="copyEmailBtn">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">좋은 선택이에요! 🎉 오늘도 균형있게.</div>
+
+<script>
+/* =========================================================
+   오늘의 샐러드 — 요일별 라인업
+========================================================= */
+const SALADS = [
+  {day:'월', emoji:'🍤', kr:'쉬림프 에그 샐러드', en:'Shrimp Egg Salad', ing:'새우 · 달걀 · 그린채소 · 레몬드레싱', kcal:320, protein:22, fiber:6},
+  {day:'화', emoji:'🌶️', kr:'케이준 치킨 샐러드', en:'Cajun Chicken Salad', ing:'케이준 닭가슴살 · 파프리카 · 로메인', kcal:380, protein:28, fiber:7},
+  {day:'수', emoji:'🍠', kr:'군고구마 단호박 샐러드', en:'Roasted Sweet Potato Pumpkin Salad', ing:'군고구마 · 단호박 · 크런치 토핑', kcal:300, protein:12, fiber:9},
+  {day:'목', emoji:'🍗', kr:'닭가슴살 고구마 샐러드', en:'Chicken Breast Sweet Potato Salad', ing:'닭가슴살 · 고구마 · 견과류', kcal:350, protein:26, fiber:8},
+  {day:'금', emoji:'🍝', kr:'푸실리 파스타 샐러드', en:'Fusilli Pasta Salad', ing:'푸실리 파스타 · 방울토마토 · 바질오일', kcal:340, protein:14, fiber:5},
+  {day:'토', emoji:'🧀', kr:'닭가슴살 리코타 샐러드', en:'Chicken Breast Ricotta Salad', ing:'닭가슴살 · 리코타치즈 · 견과류', kcal:360, protein:27, fiber:7},
+  {day:'일', emoji:'🍯', kr:'허니 리코타 샐러드', en:'Honey Ricotta Salad', ing:'리코타치즈 · 꿀 · 제철과일', kcal:310, protein:15, fiber:6},
+];
+
+function renderSalad(idx, todayIdx){
+  const s = SALADS[idx];
+  document.getElementById('saladEmoji').textContent = s.emoji;
+  document.getElementById('saladBadge').textContent = idx===todayIdx ? 'TODAY' : s.day+'요일';
+  document.getElementById('saladKr').textContent = s.kr;
+  document.getElementById('saladEn').textContent = s.en;
+  document.getElementById('saladIngredients').textContent = s.ing;
+  document.getElementById('saladKcal').textContent = s.kcal;
+  document.getElementById('saladProtein').textContent = s.protein+'g';
+  document.getElementById('saladFiber').textContent = s.fiber+'g';
+}
+
+(function initDayPicker(){
+  const picker = document.getElementById('dayPicker');
+  const jsDay = new Date().getDay(); // 0=일 ... 6=토
+  const todayIdx = jsDay===0 ? 6 : jsDay-1; // map to 월=0..일=6
+
+  SALADS.forEach((s,i)=>{
+    const chip = document.createElement('button');
+    chip.className = 'day-chip' + (i===todayIdx ? ' active' : '');
+    chip.innerHTML = s.day+'<span class="d">'+(i===todayIdx?'오늘':s.en.split(' ')[0])+'</span>';
+    chip.addEventListener('click', ()=>{
+      document.querySelectorAll('.day-chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      renderSalad(i, todayIdx);
     });
-    document.getElementById("today").textContent = formatted;
-  </script>
+    picker.appendChild(chip);
+  });
+  renderSalad(todayIdx, todayIdx);
+})();
+
+/* =========================================================
+   점심 메뉴 고민 해결 버튼 — 룰렛
+========================================================= */
+const MENU = [
+  {kr:'쉬림프 에그 샐러드', en:'Shrimp Egg Salad', emoji:'🍤', kcal:320, protein:22, fiber:6, tags:['저당','고단백'], blurb:'탱글한 새우와 부드러운 달걀, 가볍게 즐기는 단백질 한 끼.'},
+  {kr:'케이준 치킨 샐러드', en:'Cajun Chicken Salad', emoji:'🌶️', kcal:380, protein:28, fiber:7, tags:['든든하게','고단백'], blurb:'매콤하게 시즈닝한 닭가슴살로 재미를 더한 든든한 한 그릇.'},
+  {kr:'군고구마 단호박 샐러드', en:'Roasted Sweet Potato Pumpkin Salad', emoji:'🍠', kcal:300, protein:12, fiber:9, tags:['가볍게'], blurb:'달큰한 고구마와 단호박으로 편안하게 채우는 한 끼.'},
+  {kr:'닭가슴살 고구마 샐러드', en:'Chicken Breast Sweet Potato Salad', emoji:'🍗', kcal:350, protein:26, fiber:8, tags:['든든하게','고단백'], blurb:'익숙한 조합, 실패 없는 든든한 단백질 샐러드.'},
+  {kr:'푸실리 파스타 샐러드', en:'Fusilli Pasta Salad', emoji:'🍝', kcal:340, protein:14, fiber:5, tags:['가볍게'], blurb:'쫄깃한 파스타에 채소를 더해 가볍게 즐기는 한 끼.'},
+  {kr:'닭가슴살 리코타 샐러드', en:'Chicken Breast Ricotta Salad', emoji:'🧀', kcal:360, protein:27, fiber:7, tags:['고단백','저당'], blurb:'부드러운 리코타와 담백한 닭가슴살의 조합.'},
+  {kr:'바질 리코타 샐러드', en:'Basil Ricotta Salad', emoji:'🌿', kcal:290, protein:13, fiber:6, tags:['가볍게','저당'], blurb:'향긋한 바질 향이 산뜻하게 입맛을 돋우는 한 그릇.'},
+  {kr:'당근 라페 리코타 샐러드', en:'Carrot Rape Ricotta Salad', emoji:'🥕', kcal:270, protein:11, fiber:8, tags:['가볍게','저당'], blurb:'아삭한 당근 라페로 상큼하게, 부담 없이.'},
+  {kr:'닭가슴살 과카몰리 통밀 프로틴 랩', en:'Chicken Guacamole Wheat Protein Wrap', emoji:'🌯', kcal:410, protein:30, fiber:9, tags:['든든하게','고단백','NEW'], blurb:'신제품! 아보카도 과카몰리와 통밀 랩의 든든한 조합.'},
+  {kr:'불고기 치즈 통밀 프로틴 랩', en:'Bulgogi Cheese Wheat Protein Wrap', emoji:'🌯', kcal:430, protein:27, fiber:6, tags:['든든하게','NEW'], blurb:'신제품! 불고기와 치즈, 든든하게 배부른 한 끼.'},
+];
+
+const MOODS = ['전체','가볍게','든든하게','저당','고단백'];
+let activeMood = '전체';
+let lastPick = null;
+let spinning = false;
+
+(function initMoodRow(){
+  const row = document.getElementById('moodRow');
+  MOODS.forEach(m=>{
+    const chip = document.createElement('button');
+    chip.className = 'mood-chip' + (m===activeMood ? ' active' : '');
+    chip.textContent = m;
+    chip.addEventListener('click', ()=>{
+      activeMood = m;
+      document.querySelectorAll('.mood-chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+    row.appendChild(chip);
+  });
+})();
+
+function pickMenu(){
+  let pool = activeMood==='전체' ? MENU : MENU.filter(m=>m.tags.includes(activeMood));
+  if(pool.length===0) pool = MENU;
+  if(pool.length>1 && lastPick){
+    pool = pool.filter(m=>m.kr!==lastPick.kr);
+  }
+  const pick = pool[Math.floor(Math.random()*pool.length)];
+  lastPick = pick;
+  return pick;
+}
+
+function renderResult(item){
+  document.getElementById('resEmoji').textContent = item.emoji;
+  document.getElementById('resKr').textContent = item.kr;
+  document.getElementById('resEn').textContent = item.en;
+  document.getElementById('resBlurb').textContent = item.blurb;
+  document.getElementById('resKcal').textContent = item.kcal;
+  document.getElementById('resProtein').textContent = item.protein+'g';
+  document.getElementById('resFiber').textContent = item.fiber+'g';
+  const tagsEl = document.getElementById('resTags');
+  tagsEl.innerHTML = '';
+  item.tags.forEach(t=>{
+    const span = document.createElement('span');
+    span.className = 'tag-chip';
+    span.textContent = t;
+    tagsEl.appendChild(span);
+  });
+}
+
+function runRoll(){
+  if(spinning) return;
+  spinning = true;
+  const rollBtn = document.getElementById('rollBtn');
+  const spinLine = document.getElementById('spinLine');
+  const resultCard = document.getElementById('resultCard');
+  rollBtn.disabled = true;
+  resultCard.classList.remove('show');
+
+  let ticks = 0;
+  const maxTicks = 14;
+  const interval = setInterval(()=>{
+    const random = MENU[Math.floor(Math.random()*MENU.length)];
+    spinLine.textContent = random.emoji+' '+random.kr;
+    ticks++;
+    if(ticks>=maxTicks){
+      clearInterval(interval);
+      const finalPick = pickMenu();
+      spinLine.textContent = '';
+      renderResult(finalPick);
+      resultCard.classList.add('show');
+      rollBtn.disabled = false;
+      spinning = false;
+    }
+  }, 70);
+}
+
+document.getElementById('rollBtn').addEventListener('click', runRoll);
+document.getElementById('rerollBtn').addEventListener('click', runRoll);
+
+function showToast(msg){
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(()=>toast.classList.remove('show'), 2500);
+}
+
+document.getElementById('confirmBtn').addEventListener('click', ()=>{
+  showToast('좋은 선택이에요! 🎉 오늘도 균형있게.');
+});
+
+/* =========================================================
+   상품 문의 모달
+========================================================= */
+const inquiryOverlay = document.getElementById('inquiryOverlay');
+function openInquiry(){ inquiryOverlay.classList.add('show'); }
+function closeInquiry(){ inquiryOverlay.classList.remove('show'); }
+
+document.getElementById('inquiryBtn').addEventListener('click', openInquiry);
+document.getElementById('inquiryClose').addEventListener('click', closeInquiry);
+inquiryOverlay.addEventListener('click', (e)=>{ if(e.target===inquiryOverlay) closeInquiry(); });
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeInquiry(); });
+
+document.getElementById('copyEmailBtn').addEventListener('click', async ()=>{
+  const email = document.getElementById('inquiryEmail').textContent;
+  try{
+    await navigator.clipboard.writeText(email);
+    showToast('이메일 주소를 복사했어요 📋');
+  }catch(e){
+    showToast('직접 선택해서 복사해주세요: '+email);
+  }
+});
+
+/* =========================================================
+   미니게임 — 샐러드 이름 타자 게임
+========================================================= */
+const TYPING_WORDS = Array.from(new Set([
+  ...SALADS.map(s=>s.kr),
+  ...MENU.map(m=>m.kr),
+  '풀드포크 체다치즈 통밀 프로틴 랩',
+  '훈제오리 에그마요 통밀 프로틴 랩',
+]));
+
+const tgEl = {
+  speed: document.getElementById('tgSpeed'),
+  score: document.getElementById('tgScore'),
+  accuracy: document.getElementById('tgAccuracy'),
+  time: document.getElementById('tgTime'),
+  target: document.getElementById('typingTarget'),
+  input: document.getElementById('typingInput'),
+  startBtn: document.getElementById('typingStartBtn'),
+  retryBtn: document.getElementById('typingRetryBtn'),
+  result: document.getElementById('typingResult'),
+  trHeadline: document.getElementById('trHeadline'),
+  trSub: document.getElementById('trSub'),
+};
+
+const GAME_SECONDS = 60;
+let tg = null; // active game state
+
+function tgPickWord(prevWord){
+  let pool = TYPING_WORDS;
+  if(prevWord && pool.length > 1) pool = pool.filter(w=>w!==prevWord);
+  // NFC로 정규화 — 한글 자모 결합 방식(NFC/NFD)이 OS·브라우저마다 달라
+  // 눈에는 똑같아 보여도 문자열 비교가 실패하는 것을 막기 위함
+  return pool[Math.floor(Math.random()*pool.length)].normalize('NFC');
+}
+
+function tgRenderTarget(typedStripped){
+  // 화면에는 원래 이름(띄어쓰기 포함)을 그대로 보여주되, 띄어쓰기 칸은 채점에서
+  // 건너뛰고 실제 글자끼리만 순서대로 맞춰본다 (띄어쓰기를 안 쳐도 정답 처리됨).
+  const display = tg.currentWord;
+  let ti = 0;
+  let html = '';
+  for(let i=0;i<display.length;i++){
+    const ch = display[i];
+    if(ch === ' '){
+      html += '<span class="ch sp">&nbsp;</span>';
+      continue;
+    }
+    let cls = '';
+    if(ti < typedStripped.length) cls = typedStripped[ti]===ch ? 'ok' : 'bad';
+    ti++;
+    html += '<span class="ch '+cls+'">'+ch+'</span>';
+  }
+  tgEl.target.innerHTML = html;
+}
+
+function tgUpdateStats(){
+  const elapsedMin = Math.max((GAME_SECONDS - tg.timeLeft) / 60, 1/60);
+  const speed = Math.round(tg.correctChars / elapsedMin);
+  const acc = tg.keystrokes === 0 ? 100 : Math.round((tg.goodKeystrokes / tg.keystrokes) * 100);
+  tgEl.speed.textContent = speed;
+  tgEl.score.textContent = tg.score;
+  tgEl.accuracy.textContent = acc + '%';
+  tgEl.time.textContent = tg.timeLeft;
+  return { speed, acc };
+}
+
+function tgNextWord(){
+  tg.currentWord = tgPickWord(tg.currentWord); // 화면 표시용 (띄어쓰기 포함)
+  tg.compareWord = tg.currentWord.replace(/\s+/g, ''); // 채점용 (띄어쓰기 제거)
+  tg.lastTyped = '';
+  tgEl.input.value = '';
+  tgRenderTarget('');
+}
+
+function tgStart(){
+  tg = {
+    timeLeft: GAME_SECONDS, score: 0, correctChars: 0,
+    keystrokes: 0, goodKeystrokes: 0, currentWord: '', compareWord: '', lastTyped: '', interval: null,
+  };
+  tgEl.result.classList.remove('show');
+  tgEl.startBtn.style.display = 'none';
+  tgEl.input.disabled = false;
+  tgEl.input.value = '';
+  tgNextWord();
+  tgUpdateStats();
+  tgEl.input.focus();
+
+  tg.interval = setInterval(()=>{
+    tg.timeLeft--;
+    tgUpdateStats();
+    if(tg.timeLeft <= 0) tgEnd();
+  }, 1000);
+}
+
+function tgEnd(){
+  clearInterval(tg.interval);
+  tgEl.input.disabled = true;
+  tgEl.startBtn.style.display = 'inline-flex';
+  tgEl.startBtn.textContent = '🎮 다시 시작하기';
+  const { speed, acc } = tgUpdateStats();
+  tgEl.target.textContent = '⏱️ 시간 종료!';
+
+  let headline, sub;
+  if(speed >= 300){ headline = '🔥 타자왕이시네요!'; }
+  else if(speed >= 200){ headline = '🥗 샐러드 마스터 수준이에요!'; }
+  else if(speed >= 100){ headline = '💪 좋아요, 감이 오시죠?'; }
+  else{ headline = '🌱 재미있게 즐겨주셔서 감사해요!'; }
+  sub = speed + '타/분 · ' + tg.score + '개 완성 · 정확도 ' + acc + '%';
+
+  tgEl.trHeadline.textContent = headline;
+  tgEl.trSub.textContent = sub;
+  tgEl.result.classList.add('show');
+}
+
+function tgHandleTyping(){
+  if(!tg || tg.timeLeft <= 0) return;
+  // 입력값을 NFC로 정규화하고 띄어쓰기를 전부 제거한 뒤 비교한다.
+  // 이름에 있는 띄어쓰기는 화면 표시용일 뿐, 실제로 안 쳐도 정답으로 인정한다
+  // (자판·자동완성마다 스페이스가 들어가거나 빠지는 경우가 달라 채점에서 아예 제외).
+  const typed = tgEl.input.value.normalize('NFC').replace(/\s+/g, '');
+  // 'input'과 'compositionend'가 같은 값을 두 번 보고하는 경우를 걸러
+  // 타수/정확도가 중복 집계되지 않게 한다.
+  if(typed === tg.lastTyped) return;
+  tg.lastTyped = typed;
+
+  const word = tg.compareWord;
+
+  tg.keystrokes++;
+  if(word.startsWith(typed)) tg.goodKeystrokes++;
+
+  tgRenderTarget(typed);
+
+  if(typed === word){
+    tg.score++;
+    tg.correctChars += word.length;
+    tgNextWord();
+  }
+  tgUpdateStats();
+}
+
+tgEl.input.addEventListener('input', tgHandleTyping);
+// 한글 IME는 조합 중간에도 'input'이 발생하지만, 일부 브라우저·자판 조합은 조합이
+// 끝난 직후(compositionend)나 keyup 시점에야 완성된 값을 반영하므로 함께 확인한다.
+tgEl.input.addEventListener('compositionend', tgHandleTyping);
+tgEl.input.addEventListener('keyup', tgHandleTyping);
+// 자동 감지가 놓치는 경우를 위한 확실한 안전장치: Enter를 누르면 무조건 재검사한다.
+tgEl.input.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter' && tg){
+    e.preventDefault();
+    tg.lastTyped = null; // 강제로 재검사되도록 초기화
+    tgHandleTyping();
+  }
+});
+
+tgEl.startBtn.addEventListener('click', tgStart);
+tgEl.retryBtn.addEventListener('click', tgStart);
+</script>
 </body>
 </html>

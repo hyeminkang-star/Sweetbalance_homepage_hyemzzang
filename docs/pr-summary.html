@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스윗밸런스 홈페이지 — PR 요약</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --g:#00614E; --g2:#007C5E; --sw:#FDFFE6;
+    --seed:#84BA45;
+    --ink:#1B2A24; --char:#3A4742; --slate:#6B7571;
+    --mist:#C8CEC9; --paper:#F6F4E8; --white:#FFFFFF;
+    --border:rgba(0,97,78,.15); --div:rgba(0,97,78,.09);
+    --sh-sm:0 2px 8px rgba(27,42,36,.07);
+    --sh-md:0 8px 24px rgba(27,42,36,.10);
+    --r-sm:8px; --r-md:14px; --r-lg:20px; --r-xl:28px; --r-pill:999px;
+    --font:'Noto Sans KR','Noto Sans',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:var(--font);background:var(--sw);color:var(--ink);line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:840px;margin:0 auto;padding:64px 24px 100px;}
+  header.doc-head{margin-bottom:56px;}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--g);margin-bottom:14px;}
+  h1{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.3;margin-bottom:12px;}
+  .doc-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--slate);}
+  .doc-meta span{display:flex;align-items:center;gap:6px;}
+
+  section{margin-bottom:56px;}
+  h2{font-size:22px;font-weight:700;color:var(--g);margin-bottom:18px;letter-spacing:-.01em;}
+  h2 .num{font-family:ui-monospace,monospace;font-size:14px;color:var(--seed);margin-right:8px;}
+  p{font-size:15px;color:var(--char);max-width:70ch;}
+  p + p{margin-top:10px;}
+
+  .transform{
+    display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:stretch;
+  }
+  .transform .box{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:22px;box-shadow:var(--sh-sm);}
+  .transform .box .label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--slate);margin-bottom:8px;}
+  .transform .box.tobe{border-color:var(--g);background:rgba(0,97,78,.04);}
+  .transform .box.tobe .label{color:var(--g);}
+  .transform .arrow{display:flex;align-items:center;justify-content:center;color:var(--seed);font-size:22px;}
+  @media (max-width:640px){ .transform{grid-template-columns:1fr;} .transform .arrow{transform:rotate(90deg);padding:4px 0;} }
+
+  .screen-list{display:flex;flex-direction:column;gap:14px;}
+  .screen-item{
+    display:flex;gap:16px;background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);
+    padding:18px 20px;box-shadow:var(--sh-sm);align-items:flex-start;
+  }
+  .screen-item .idx{
+    flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--g);color:var(--sw);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;
+  }
+  .screen-item .body b{display:block;font-size:15px;margin-bottom:4px;}
+  .screen-item .body span{font-size:13px;color:var(--char);}
+  .screen-item.hero-feature{border-color:var(--seed);background:rgba(132,186,69,.06);}
+  .screen-item.hero-feature .idx{background:var(--seed);}
+  .star-tag{display:inline-block;margin-left:8px;background:var(--seed);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:var(--r-pill);vertical-align:middle;}
+
+  .feature-flow{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;}
+  .flow-step{
+    flex:1;min-width:140px;background:#fff;border:1px solid var(--border);border-radius:var(--r-md);
+    padding:14px 16px;box-shadow:var(--sh-sm);
+  }
+  .flow-step .n{font-family:ui-monospace,monospace;font-size:11px;color:var(--seed);font-weight:700;margin-bottom:6px;}
+  .flow-step b{display:block;font-size:13px;margin-bottom:4px;}
+  .flow-step span{font-size:12px;color:var(--char);}
+
+  table{width:100%;border-collapse:collapse;margin-top:8px;background:#fff;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-sm);}
+  th{text-align:left;padding:12px 16px;background:rgba(0,97,78,.06);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--g);}
+  td{padding:14px 16px;border-top:1px solid var(--div);font-size:13px;color:var(--char);vertical-align:top;}
+  td.q{font-weight:700;color:var(--ink);width:26%;}
+  td.a{color:var(--g);font-weight:600;width:22%;}
+
+  .chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;}
+  .chip{background:rgba(0,97,78,.08);color:var(--g);font-size:12px;font-weight:700;padding:6px 14px;border-radius:var(--r-pill);}
+
+  .file-list{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow:hidden;}
+  .file-row{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--div);gap:12px;flex-wrap:wrap;}
+  .file-row:last-child{border-bottom:none;}
+  .file-row code{font-family:ui-monospace,monospace;font-size:13px;color:var(--ink);}
+  .file-row .tag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:var(--r-pill);flex-shrink:0;}
+  .tag.added{background:rgba(132,186,69,.16);color:#3d7a18;}
+  .tag.modified{background:rgba(80,170,220,.16);color:#2c7ba6;}
+
+  footer.doc-foot{margin-top:64px;padding-top:24px;border-top:1px solid var(--div);font-size:12px;color:var(--slate);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="doc-head">
+    <div class="kicker">Pull Request Summary</div>
+    <h1>스윗밸런스 자사몰 홈페이지 — 시안 1차 완성</h1>
+    <div class="doc-meta">
+      <span>🌿 브랜치: claude/sweetbalance-homepage-vbn45q</span>
+      <span>📄 index.html (1 file, self-contained)</span>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="num">00</span>무엇이 바뀌나요</h2>
+    <div class="transform">
+      <div class="box">
+        <div class="label">AS-IS</div>
+        <p>이름과 오늘 날짜만 보여주는 임시 플레이스홀더 페이지.</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="box tobe">
+        <div class="label">TO-BE</div>
+        <p>스윗밸런스 디자인 시스템을 따르는 실제 자사몰 홈페이지. 첫 화면, 신제품 소개, 오늘의 샐러드, 점심 메뉴 룰렛, 브랜드 소개까지 5개 섹션과 실제 작동하는 인터랙션을 포함.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">01</span>화면 구성</h2>
+    <div class="screen-list">
+      <div class="screen-item">
+        <div class="idx">1</div>
+        <div class="body"><b>헤더</b><span>워드마크 로고, 신제품·오늘의 샐러드·점심 메뉴 뽑기·브랜드 소개 내비게이션, 상품 문의 아이콘 버튼.</span></div>
+      </div>
+      <div class="screen-item">
+        <div class="idx">2</div>
+        <div class="body"><b>첫 화면 (Hero)</b><span>"이 정도면, 나도 할 수 있겠다." 안심형 헤드라인 + 저당·고단백·식이섬유 배지 + 통계(평균 단백질/칼로리/식이섬유).</span></div>
+      </div>
+      <div class="screen-item">
+        <div class="idx">3</div>
+        <div class="body"><b>신제품 소개</b><span>통밀 프로틴 랩 4종을 실제 가격·할인가·품절 상태 그대로 카드로 소개. 마켓컬리 입점 안내 포함.</span></div>
+      </div>
+      <div class="screen-item">
+        <div class="idx">4</div>
+        <div class="body"><b>오늘의 샐러드</b><span>요일 칩을 누르면 그날의 샐러드로 바뀌는 주간 로테이션. 접속 요일을 자동 인식해 오늘 메뉴를 기본 표시.</span></div>
+      </div>
+      <div class="screen-item hero-feature">
+        <div class="idx">★</div>
+        <div class="body"><b>점심 메뉴 고민 해결 버튼<span class="star-tag">주인공 기능</span></b><span>필터를 고르고 버튼을 누르면 메뉴가 룰렛처럼 돌다가 하나로 착지 — 실제로 작동하는 인터랙션. 아래 02번에서 상세 설명.</span></div>
+      </div>
+      <div class="screen-item">
+        <div class="idx">5</div>
+        <div class="body"><b>샐러드 이름 타자 게임</b><span>60초 동안 실제 샐러드·신제품 이름이 랜덤으로 출제되는 한컴타자 스타일 미니게임. 타/분·정확도·맞춘 개수를 실시간으로 보여줍니다.</span></div>
+      </div>
+      <div class="screen-item">
+        <div class="idx">6</div>
+        <div class="body"><b>브랜드 소개</b><span>워드마크 로고, 미션 선언문, 슬로건, Warm·Fresh·Honest 브랜드 성격, 푸터.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>주인공 기능 — 점심 메뉴 고민 해결 버튼</h2>
+    <p>"오늘 점심 뭐 먹지"라는 매일의 고민을 스윗밸런스가 대신 해결해주는 기능입니다. 실제 스윗밸런스 샐러드 라인업과 신제품 통밀 프로틴 랩을 포함한 메뉴 풀에서, 사용자가 고른 스타일에 맞춰 결과를 골라줍니다.</p>
+    <div class="feature-flow">
+      <div class="flow-step"><div class="n">STEP 1</div><b>스타일 선택</b><span>가볍게 / 든든하게 / 저당 / 고단백 중 원하는 무드를 고릅니다.</span></div>
+      <div class="flow-step"><div class="n">STEP 2</div><b>뽑기 버튼 클릭</b><span>메뉴 이름이 빠르게 돌아가며 룰렛처럼 연출됩니다.</span></div>
+      <div class="flow-step"><div class="n">STEP 3</div><b>결과 카드 등장</b><span>이모지·칼로리·단백질·식이섬유·태그가 담긴 카드가 스프링 애니메이션으로 나타납니다.</span></div>
+      <div class="flow-step"><div class="n">STEP 4</div><b>결정 또는 재도전</b><span>"다시 뽑기"로 재도전하거나 "좋아요, 이걸로 할래요!"로 확정하면 응원 토스트가 뜹니다.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>인터뷰 답변이 반영된 곳</h2>
+    <table>
+      <thead><tr><th>질문</th><th>답변</th><th>반영 위치</th></tr></thead>
+      <tbody>
+        <tr><td class="q">1. 타겟 고객</td><td class="a">운동 / 다이어터</td><td>헤드라인, 배지, 통계 수치, 메뉴 태그(고단백·저당)가 모두 운동·다이어트 목표에 맞춰 설계됨</td></tr>
+        <tr><td class="q">2. 첫인상 문장</td><td class="a">"이 정도면 나도 할 수 있겠다" 안심</td><td>Hero 헤드라인 "이 정도면, 나도 할 수 있겠다."로 그대로 문구화</td></tr>
+        <tr><td class="q">3. 대표 제품</td><td class="a">오늘의 샐러드</td><td>요일별로 바뀌는 "오늘의 샐러드" 전용 섹션으로 구성</td></tr>
+        <tr><td class="q">4. 핵심 아이디어 기능</td><td class="a">점심 메뉴 고민 해결 버튼</td><td>페이지의 주인공 기능으로 가장 공들여 제작 (02번 참고)</td></tr>
+        <tr><td class="q">5. 분위기</td><td class="a">미니멀 화이트</td><td>Sunshine White 배경 위 넉넉한 여백, Seed Green 한 가지만 포인트로 절제 사용</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>디자인 시스템 준수</h2>
+    <p>SweetBalance Brand Design System Manual에 정의된 토큰을 그대로 사용했습니다.</p>
+    <div class="chip-row">
+      <span class="chip">Vital Green #00614E</span>
+      <span class="chip">Sunshine White #FDFFE6</span>
+      <span class="chip">Seed Green 포인트 1색 원칙</span>
+      <span class="chip">Pill 버튼 (Primary/Secondary/Ghost/Accent)</span>
+      <span class="chip">Radius 14–28px</span>
+      <span class="chip">그린 틴트 섀도우</span>
+      <span class="chip">모션 120–420ms, bounce 금지</span>
+      <span class="chip">Noto Sans / Noto Sans KR (요청 반영)</span>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">05</span>변경 파일 목록</h2>
+    <div class="file-list">
+      <div class="file-row"><code>index.html</code><span class="tag modified">수정</span></div>
+      <div class="file-row"><code>docs/pr-summary.html</code><span class="tag added">신규</span></div>
+    </div>
+  </section>
+
+  <footer class="doc-foot">
+    스윗밸런스 홈페이지 프로젝트 · 이 문서는 PR 설명을 돕기 위한 요약 자료입니다.
+  </footer>
+</div>
+</body>
+</html>
