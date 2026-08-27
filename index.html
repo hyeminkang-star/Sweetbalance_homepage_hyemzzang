@@ -800,13 +800,22 @@ function tgPickWord(prevWord){
   return pool[Math.floor(Math.random()*pool.length)].normalize('NFC');
 }
 
-function tgRenderTarget(typed){
-  const word = tg.currentWord;
+function tgRenderTarget(typedStripped){
+  // 화면에는 원래 이름(띄어쓰기 포함)을 그대로 보여주되, 띄어쓰기 칸은 채점에서
+  // 건너뛰고 실제 글자끼리만 순서대로 맞춰본다 (띄어쓰기를 안 쳐도 정답 처리됨).
+  const display = tg.currentWord;
+  let ti = 0;
   let html = '';
-  for(let i=0;i<word.length;i++){
+  for(let i=0;i<display.length;i++){
+    const ch = display[i];
+    if(ch === ' '){
+      html += '<span class="ch sp">&nbsp;</span>';
+      continue;
+    }
     let cls = '';
-    if(i < typed.length) cls = typed[i]===word[i] ? 'ok' : 'bad';
-    html += '<span class="ch '+cls+'">'+word[i]+'</span>';
+    if(ti < typedStripped.length) cls = typedStripped[ti]===ch ? 'ok' : 'bad';
+    ti++;
+    html += '<span class="ch '+cls+'">'+ch+'</span>';
   }
   tgEl.target.innerHTML = html;
 }
@@ -823,7 +832,8 @@ function tgUpdateStats(){
 }
 
 function tgNextWord(){
-  tg.currentWord = tgPickWord(tg.currentWord);
+  tg.currentWord = tgPickWord(tg.currentWord); // 화면 표시용 (띄어쓰기 포함)
+  tg.compareWord = tg.currentWord.replace(/\s+/g, ''); // 채점용 (띄어쓰기 제거)
   tg.lastTyped = '';
   tgEl.input.value = '';
   tgRenderTarget('');
@@ -832,7 +842,7 @@ function tgNextWord(){
 function tgStart(){
   tg = {
     timeLeft: GAME_SECONDS, score: 0, correctChars: 0,
-    keystrokes: 0, goodKeystrokes: 0, currentWord: '', lastTyped: '', interval: null,
+    keystrokes: 0, goodKeystrokes: 0, currentWord: '', compareWord: '', lastTyped: '', interval: null,
   };
   tgEl.result.classList.remove('show');
   tgEl.startBtn.style.display = 'none';
@@ -871,15 +881,16 @@ function tgEnd(){
 
 function tgHandleTyping(){
   if(!tg || tg.timeLeft <= 0) return;
-  // 입력값도 NFC로 정규화 + 앞뒤 공백 제거 후 비교.
-  // (모바일 자판의 자동완성·자동 띄어쓰기로 끝에 공백이 붙는 경우 방지)
-  const typed = tgEl.input.value.normalize('NFC').trim();
+  // 입력값을 NFC로 정규화하고 띄어쓰기를 전부 제거한 뒤 비교한다.
+  // 이름에 있는 띄어쓰기는 화면 표시용일 뿐, 실제로 안 쳐도 정답으로 인정한다
+  // (자판·자동완성마다 스페이스가 들어가거나 빠지는 경우가 달라 채점에서 아예 제외).
+  const typed = tgEl.input.value.normalize('NFC').replace(/\s+/g, '');
   // 'input'과 'compositionend'가 같은 값을 두 번 보고하는 경우를 걸러
   // 타수/정확도가 중복 집계되지 않게 한다.
   if(typed === tg.lastTyped) return;
   tg.lastTyped = typed;
 
-  const word = tg.currentWord;
+  const word = tg.compareWord;
 
   tg.keystrokes++;
   if(word.startsWith(typed)) tg.goodKeystrokes++;
