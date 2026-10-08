@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-10-08",
+  "notes": "예시 데이터(가짜)로 만든 형식 예시입니다. 실제 기획에 쓰지 마세요.",
+  "concepts": [
+    {
+      "name": "따뜻한 단호박 그레인볼",
+      "category": "샐러드",
+      "one_liner": "전자레인지로 데워 먹는 겨울용 단호박·퀴노아 볼",
+      "target": "겨울에도 샐러드 식단을 유지하려는 직장인",
+      "key_ingredients": "단호박, 퀴노아, 닭가슴살, 리코타",
+      "price_range": "8,900~9,900원",
+      "approach": "바라는 점 실현",
+      "rationale": "따뜻한 버전·퀴노아 요청 리뷰, 단호박 샐러드 목표달성률 1위",
+      "evidence_review_ids": ["R0009", "R0006"],
+      "related_products": ["리코타 단호박 샐러드"],
+      "trend_keywords": ["따뜻한 샐러드"],
+      "trend_source": "",
+      "risks": "데움용 용기 변경 필요",
+      "scores": {"need": 4, "sales": 5, "trend": 4, "differentiation": 4, "feasibility": 3}
+    },
+    {
+      "name": "곱빼기 닭가슴살 랩",
+      "category": "간편식",
+      "one_liner": "단백질 1.5배, 포만감 부족 불만을 해결한 랩",
+      "target": "운동 후 한 끼",
+      "key_ingredients": "닭가슴살, 고구마, 통밀 토르티야",
+      "price_range": "6,900원",
+      "approach": "불만 해결",
+      "rationale": "양 부족 불만",
+      "evidence_review_ids": ["R0004", "R0045"],
+      "related_products": ["고구마 치킨 랩"],
+      "trend_keywords": ["고단백"],
+      "risks": "원가 상승",
+      "scores": {"need": 4, "sales": 4, "trend": 3, "differentiation": 2, "feasibility": 5}
+    }
+  ]
+}
