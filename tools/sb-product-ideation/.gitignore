@@ -1,0 +1,4 @@
+api_key.txt
+결과/
+.venv/
+__pycache__/

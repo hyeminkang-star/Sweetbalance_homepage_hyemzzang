@@ -1,13 +1,6 @@
-#!/usr/bin/env python3
-"""리뷰·매출·트렌드 파일을 읽어 신제품 기획용 분석 결과(analysis.json, analysis_summary.md)를 만든다.
-
-사용법:
-    python analyze_data.py <데이터폴더> [--out <결과폴더>] [--category 샐러드]
-"""
-import argparse
+"""리뷰·매출·트렌드 파일을 읽어 신제품 기획용 분석 결과(analysis.json, analysis_summary.md)를 만든다."""
 import json
 import re
-import sys
 from collections import Counter, defaultdict
 from datetime import date
 from pathlib import Path
@@ -110,10 +103,12 @@ def read_table(path):
 
 
 def classify(path, mapping):
-    p = norm(str(path))
-    for hints, kind in ((REVIEW_HINTS, "review"), (SALES_HINTS, "sales"), (TREND_HINTS, "trend"), (MASTER_HINTS, "master")):
-        if any(h in p for h in hints):
-            return kind
+    # 상위 폴더 이름(리뷰/매출/트렌드)을 먼저 보고, 그다음 파일 이름을 본다
+    for part in Path(path).parts:
+        p = norm(part)
+        for hints, kind in ((REVIEW_HINTS, "review"), (SALES_HINTS, "sales"), (TREND_HINTS, "trend"), (MASTER_HINTS, "master")):
+            if any(h in p for h in hints):
+                return kind
     if "text" in mapping:
         return "review"
     if "keyword" in mapping:
@@ -154,35 +149,39 @@ def find_attrs(text):
     return hits
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("data_dir")
-    ap.add_argument("--out", default=None)
-    ap.add_argument("--category", default=None, help="제품명·카테고리에 이 단어가 들어간 것만 분석")
-    ap.add_argument("--low-rating", type=float, default=3.0, help="이 점수 이하를 불만 리뷰로 본다")
-    args = ap.parse_args()
-
-    data_dir = Path(args.data_dir)
-    out_dir = Path(args.out) if args.out else data_dir / "결과"
+def analyze(data_dirs, out_dir, category=None, low_rating=3.0, log=print):
+    """data_dirs(폴더 하나 또는 여러 개) 안의 엑셀/CSV를 분석해 analysis dict를 돌려주고
+    out_dir에 analysis.json/analysis_summary.md를 저장한다."""
+    if isinstance(data_dirs, (str, Path)):
+        data_dirs = [data_dirs]
+    out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    files = [p for p in sorted(data_dir.rglob("*")) if p.suffix.lower() in (".xlsx", ".xlsm", ".xls", ".csv")
-             and not p.name.startswith(("~$", ".")) and out_dir not in p.parents]
+    files = []  # (기준 폴더, 파일 경로)
+    for root in map(Path, data_dirs):
+        if not root.is_dir():
+            raise ValueError(f"폴더를 찾을 수 없습니다: {root}")
+        out_r, root_r = out_dir.resolve(), root.resolve()
+        inside_out = root_r == out_r or out_r in root_r.parents  # 구글에서 받은 파일은 결과 폴더 안에 있다
+        files += [(root, p) for p in sorted(root.rglob("*")) if p.suffix.lower() in (".xlsx", ".xlsm", ".xls", ".csv")
+                  and not p.name.startswith(("~$", ".", "신제품_콘셉트후보_"))
+                  and (inside_out or out_r not in p.resolve().parents)]
     if not files:
-        sys.exit(f"[오류] {data_dir} 안에 엑셀/CSV 파일이 없습니다.")
+        raise ValueError("분석할 엑셀/CSV 파일이 없습니다. 폴더 경로나 구글 링크를 확인해 주세요.")
 
     reviews, sales_rows, trend_rows, master_rows = [], [], [], []
     file_log = []
-    for path in files:
+    for root, path in files:
+        rel = path.relative_to(root)
         try:
             tables = read_table(path)
         except Exception as e:  # noqa: BLE001
-            file_log.append({"file": str(path.relative_to(data_dir)), "status": f"읽기 실패: {e}"})
+            file_log.append({"file": str(rel), "status": f"읽기 실패: {e}"})
             continue
         for sheet, df in tables:
             mapping = map_columns(df)
-            kind = classify(path.relative_to(data_dir), mapping)
-            label = str(path.relative_to(data_dir)) + (f" [{sheet}]" if sheet and len(tables) > 1 else "")
+            kind = classify(rel, mapping)
+            label = str(rel) + (f" [{sheet}]" if sheet and len(tables) > 1 else "")
             file_log.append({"file": label, "kind": kind or "인식 못 함", "rows": len(df),
                              "columns": {k: str(v) for k, v in mapping.items()}, "all_columns": [str(c) for c in df.columns]})
             if kind == "review" and "text" in mapping:
@@ -223,7 +222,7 @@ def main():
                                         if f in mapping and pd.notna(r[mapping[f]])})
 
     if not reviews:
-        print("[경고] 리뷰를 한 건도 읽지 못했습니다. 아래 파일별 컬럼을 보고 COLUMN_ALIASES['text']를 고쳐 주세요.")
+        log("[경고] 리뷰를 한 건도 읽지 못했습니다. 파일별 인식 컬럼을 보고 COLUMN_ALIASES['text']에 리뷰 본문 컬럼명을 추가해 주세요.")
 
     # 제품명 정규화(별칭 포함)
     alias_map = {}
@@ -238,8 +237,8 @@ def main():
 
     master_by = {canon(m["product"]): m for m in master_rows}
 
-    if args.category:
-        c = args.category
+    if category:
+        c = category
         cat_of = {k: v.get("category", "") for k, v in master_by.items()}
         reviews = [r for r in reviews if c in r["product"] or c in r["category"] or c in cat_of.get(canon(r["product"]), "")]
         sales_rows = [s for s in sales_rows if c in s.get("product", "") or c in str(s.get("category", "")) or c in cat_of.get(canon(s["product"]), "")]
@@ -290,7 +289,7 @@ def main():
         products.append({
             "product": p, "review_count": len(rs),
             "avg_rating": round(sum(ratings) / len(ratings), 2) if ratings else None,
-            "low_rating_count": sum(1 for x in ratings if x <= args.low_rating),
+            "low_rating_count": sum(1 for x in ratings if x <= low_rating),
             **(sales_out.get(p) or {}),
             "top_attributes": attr_cnt.most_common(4), "top_negative_attributes": neg_cnt.most_common(3),
             "master": master_by.get(p, {}),
@@ -309,7 +308,7 @@ def main():
 
     wish_re = re.compile("|".join(WISH_PATTERNS))
     wishes = [r["id"] for r in reviews if wish_re.search(r["text"])]
-    complaints = [r["id"] for r in sorted((r for r in reviews if r["rating"] is not None and r["rating"] <= args.low_rating),
+    complaints = [r["id"] for r in sorted((r for r in reviews if r["rating"] is not None and r["rating"] <= low_rating),
                                           key=lambda r: (r["rating"], -len(r["text"])))]
     situations = Counter()
     situation_ex = defaultdict(list)
@@ -343,8 +342,8 @@ def main():
     dates = sorted(r["date"] for r in reviews if r["date"])
     analysis = {
         "generated_at": date.today().isoformat(),
-        "data_dir": str(data_dir.resolve()),
-        "category_filter": args.category,
+        "data_dirs": [str(Path(d).resolve()) for d in data_dirs],
+        "category_filter": category,
         "files": file_log,
         "overview": {"review_count": len(reviews), "product_count": len(products),
                      "review_period": [dates[0], dates[-1]] if dates else None,
@@ -362,12 +361,12 @@ def main():
     (out_dir / "analysis.json").write_text(json.dumps(analysis, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
     (out_dir / "analysis_summary.md").write_text(summary_md(analysis), encoding="utf-8")
 
-    print("=== 파일 인식 결과 ===")
+    log("파일 인식 결과:")
     for f in file_log:
-        print(f"- {f['file']}: {f.get('kind', f.get('status'))}, {f.get('rows', '-')}행, 인식 컬럼 {f.get('columns', {})}")
+        log(f"- {f['file']}: {f.get('kind', f.get('status'))}, {f.get('rows', '-')}행, 인식 컬럼 {f.get('columns', {})}")
     o = analysis["overview"]
-    print(f"\n리뷰 {o['review_count']}건 / 제품 {o['product_count']}개 / 매출 {'있음' if o['has_sales'] else '없음'} / 트렌드 {'있음' if o['has_trends'] else '없음'}")
-    print(f"저장: {out_dir / 'analysis.json'}, {out_dir / 'analysis_summary.md'}")
+    log(f"리뷰 {o['review_count']}건 / 제품 {o['product_count']}개 / 매출 {'있음' if o['has_sales'] else '없음'} / 트렌드 {'있음' if o['has_trends'] else '없음'}")
+    return analysis
 
 
 def summary_md(a):
@@ -408,7 +407,3 @@ def summary_md(a):
     else:
         L.append("- 트렌드 파일 없음. 웹 검색으로 보강하고 출처 링크를 남길 것.")
     return "\n".join(L) + "\n"
-
-
-if __name__ == "__main__":
-    main()

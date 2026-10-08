@@ -1,12 +1,4 @@
-#!/usr/bin/env python3
-"""analysis.json + concepts.json -> 신제품_콘셉트후보_YYYYMMDD.xlsx
-
-사용법:
-    python build_excel.py <analysis.json> <concepts.json> [--out <결과폴더>]
-"""
-import argparse
-import json
-import sys
+"""분석 결과 + 콘셉트 후보 -> 신제품_콘셉트후보_YYYYMMDD.xlsx"""
 from datetime import date
 from pathlib import Path
 
@@ -54,18 +46,11 @@ def quote(r):
     return f"[{r['id']}] {star}\"{r['text']}\" — {r['file']} {r['row']}행"
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("analysis")
-    ap.add_argument("concepts")
-    ap.add_argument("--out", default=None)
-    args = ap.parse_args()
-
-    a = json.loads(Path(args.analysis).read_text(encoding="utf-8"))
-    cj = json.loads(Path(args.concepts).read_text(encoding="utf-8"))
+def build_excel(a, cj, out_dir):
+    """엑셀을 저장하고 (파일 경로, 근거 확인 필요 경고 목록, 점수순으로 정렬된 콘셉트 목록)을 돌려준다."""
     concepts = cj["concepts"] if isinstance(cj, dict) else cj
     rv = {r["id"]: r for r in a["reviews"]}
-    out_dir = Path(args.out) if args.out else Path(args.analysis).parent
+    out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     warnings = []
@@ -96,7 +81,7 @@ def main():
         ("리뷰 기간", " ~ ".join(o["review_period"]) if o.get("review_period") else "날짜 정보 없음"),
         ("제품 수", o["product_count"]),
         ("매출 데이터", "있음" if o["has_sales"] else "없음"),
-        ("트렌드 데이터", "파일 있음" if o["has_trends"] else "파일 없음(웹 검색 보강 시 '트렌드' 시트에 출처 기재)"),
+        ("트렌드 데이터", (f"{len(a['trends'])}개 (" + ("웹 검색, 출처는 '트렌드' 시트" if any(t.get("from_web") for t in a["trends"]) else "파일") + ")") if a["trends"] else "없음"),
         ("카테고리 필터", a.get("category_filter") or "없음"),
         ("콘셉트 수", len(concepts)),
         ("메모", cj.get("notes", "") if isinstance(cj, dict) else ""),
@@ -210,12 +195,4 @@ def main():
 
     fname = out_dir / f"신제품_콘셉트후보_{date.today().strftime('%Y%m%d')}.xlsx"
     wb.save(fname)
-    print(f"저장: {fname} (콘셉트 {len(concepts)}개)")
-    if warnings:
-        print("\n[근거 확인 필요] 아래 콘셉트는 근거 리뷰 ID를 확인해 주세요:")
-        print("\n".join(warnings))
-        sys.exit(2)
-
-
-if __name__ == "__main__":
-    main()
+    return fname, warnings, concepts
